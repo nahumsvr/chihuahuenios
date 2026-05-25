@@ -1,0 +1,21 @@
+# Reglas de Desarrollo Frontend (Next.js 14)
+
+## 1. Entorno y Framework
+
+- Framework: Next.js 14 (App Router obligatorio). No uses la carpeta `pages/`.
+- Motor obligatorio: Node v20 (LTS).
+- Estilos: Tailwind CSS.
+
+## 2. Red y Variables de Entorno (Docker Bridge)
+
+- **Regla Crítica de Fetching:** - Si el componente es un `Server Component`, la URL de la API debe apuntar a la red interna de Docker (leer variable `API_INTERNAL_URL` ej. `http://backend:3000`).
+  - Si el componente es un `Client Component` (`"use client"`), la URL de fetch debe apuntar al localhost del host (leer `NEXT_PUBLIC_API_URL` ej. `http://localhost:3000`).
+
+## 3. Restricciones de Alcance (MVP)
+
+- **PROHIBIDO:** Construir pantallas, vistas o componentes para la administración (crear rutas, editar viajes). Todo eso es responsabilidad exclusiva del Backend vía API.
+- Céntrate únicamente en el flujo del cliente: Listado de viajes -> Selección de asientos -> Checkout (con subida de archivo para MinIO).
+
+## 4. Tipado
+
+- Duplica las interfaces de TypeScript de los DTOs del backend aquí en el frontend. No intentes enlazar tipos o construir un paquete compartido local. Mantén los proyectos desacoplados.
