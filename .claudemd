@@ -1,0 +1,14 @@
+# Reglas Globales de Infraestructura (Raíz)
+
+## 1. Aislamiento Estricto
+- Este es un "Falso Monorepo". `/backend` y `/frontend` son proyectos completamente independientes.
+- PROHIBIDO sugerir herramientas de monorepo reales (Nx, Turborepo, Lerna, Yarn Workspaces).
+- PROHIBIDO instalar dependencias en la raíz. Los `package.json` están dentro de cada subcarpeta.
+
+## 2. Orquestación y Entorno
+- La infraestructura se levanta ÚNICAMENTE mediante el archivo `docker-compose.yml` de la raíz.
+- Tecnologías autorizadas en Docker: PostgreSQL (DB), MinIO (S3 Emulado), Node:20-alpine (Contenedores base para app).
+- NUNCA sugieras instalar bases de datos nativas en el sistema operativo host.
+
+## 3. Protocolo de Commits
+- Antes de saltar entre el frontend y el backend, asegúrate de que el código pase pruebas de linting y haz un commit. No acumules cambios cruzados.

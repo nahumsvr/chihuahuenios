@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: chihuahuenos_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: chihuahuenos_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - chihuahuenos_network
+
+  minio:
+    image: minio/minio:RELEASE.2024-01-11T06-46-16Z
+    container_name: chihuahuenos_s3
+    restart: always
+    ports:
+      - "9000:9000" # API S3
+      - "9001:9001" # Consola Web
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadminsecret
+    volumes:
+      - miniodata:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - chihuahuenos_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chihuahuenos_backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgrespassword@postgres:5432/chihuahuenos_db?schema=public
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadminsecret
+      MINIO_BUCKET_NAME: identificaciones
+      ADMIN_API_KEY: secreto-admin-key-2026
+    depends_on:
+      - postgres
+      - minio
+    networks:
+      - chihuahuenos_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: chihuahuenos_frontend
+    restart: always
+    ports:
+      - "8000:3000" # Mapea el puerto 3000 interno de Next al 8000 del host para no chocar con NestJS
+    environment:
+      NODE_ENV: development
+      # URL utilizada por componentes ejecutados en el Navegador (Fuera de Docker)
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      # URL utilizada por Server Components para fetch interno directo (Dentro de Docker)
+      API_INTERNAL_URL: http://backend:3000
+    depends_on:
+      - backend
+    networks:
+      - chihuahuenos_network
+
+volumes:
+  pgdata:
+    driver: local
+  miniodata:
+    driver: local
+
+networks:
+  chihuahuenos_network:
+    driver: bridge
