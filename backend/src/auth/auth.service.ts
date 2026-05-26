@@ -14,7 +14,7 @@ export class AuthService {
 
   async register(registerDto: RegisterDto) {
     const user = await this.usersService.create(registerDto);
-    
+
     // Do not return password_hash in response
     const { password_hash, ...result } = user;
     return result;
@@ -22,7 +22,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
-    
+
     const user = await this.usersService.findOneByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Credenciales incorrectas');
@@ -34,7 +34,7 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, email: user.email, nombre: user.nombre };
-    
+
     return {
       access_token: await this.jwtService.signAsync(payload),
       user: {

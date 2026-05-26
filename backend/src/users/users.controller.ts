@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UsersService } from '@/users/users.service';
 import { CreateUserDto } from '@/users/dto/create-user.dto';
@@ -12,14 +20,20 @@ export class UsersController {
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo usuario' })
   @ApiResponse({ status: 21, description: 'Usuario creado exitosamente.' })
-  @ApiResponse({ status: 400, description: 'Datos inválidos o correo ya registrado.' })
+  @ApiResponse({
+    status: 400,
+    description: 'Datos inválidos o correo ya registrado.',
+  })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Obtener todos los usuarios' })
-  @ApiResponse({ status: 200, description: 'Lista de usuarios devuelta exitosamente.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de usuarios devuelta exitosamente.',
+  })
   findAll() {
     return this.usersService.findAll();
   }
@@ -36,7 +50,10 @@ export class UsersController {
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un usuario por su ID' })
   @ApiParam({ name: 'id', description: 'ID único del usuario (UUID)' })
-  @ApiResponse({ status: 200, description: 'Usuario actualizado exitosamente.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuario actualizado exitosamente.',
+  })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);

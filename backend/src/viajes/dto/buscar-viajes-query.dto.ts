@@ -12,7 +12,10 @@ export class BuscarViajesQueryDto {
   @IsNotEmpty()
   destino: string;
 
-  @ApiProperty({ description: 'Fecha del viaje (YYYY-MM-DD)', example: '2026-06-01' })
+  @ApiProperty({
+    description: 'Fecha del viaje (YYYY-MM-DD)',
+    example: '2026-06-01',
+  })
   @IsDateString()
   @IsNotEmpty()
   fecha: string;

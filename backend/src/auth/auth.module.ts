@@ -12,7 +12,10 @@ import { UsersModule } from '@/users/users.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET', 'super-secret-key-change-in-prod'),
+        secret: configService.get<string>(
+          'JWT_SECRET',
+          'super-secret-key-change-in-prod',
+        ),
         signOptions: {
           expiresIn: configService.get<string>('JWT_EXPIRATION', '1d') as any,
         },

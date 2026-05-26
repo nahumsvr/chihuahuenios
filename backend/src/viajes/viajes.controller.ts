@@ -10,7 +10,14 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiHeader, ApiSecurity, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiHeader,
+  ApiSecurity,
+  ApiParam,
+} from '@nestjs/swagger';
 import { ViajesService } from '@/viajes/viajes.service';
 import { CreateViajeDto } from '@/viajes/dto/create-viaje.dto';
 import { BuscarViajesQueryDto } from '@/viajes/dto/buscar-viajes-query.dto';
@@ -35,11 +42,14 @@ export class ViajesController {
   }
 
   @Get(':id/boletos')
-  @ApiOperation({ summary: 'Obtener boletos de un viaje (con Lazy Expiration)' })
+  @ApiOperation({
+    summary: 'Obtener boletos de un viaje (con Lazy Expiration)',
+  })
   @ApiParam({ name: 'id', description: 'ID del viaje', type: Number })
   @ApiResponse({
     status: 200,
-    description: 'Array de boletos. Las reservas expiradas se marcan como disponibles.',
+    description:
+      'Array de boletos. Las reservas expiradas se marcan como disponibles.',
   })
   @ApiResponse({ status: 404, description: 'Viaje no encontrado.' })
   getBoletos(@Param('id', ParseIntPipe) id: number) {
@@ -51,9 +61,19 @@ export class ViajesController {
   @HttpCode(HttpStatus.CREATED)
   @ApiSecurity('x-api-key')
   @ApiOperation({ summary: 'Crear un nuevo viaje con sus boletos' })
-  @ApiHeader({ name: 'x-api-key', description: 'Clave de administración', required: true })
-  @ApiResponse({ status: 201, description: 'Viaje creado con sus boletos exitosamente.' })
-  @ApiResponse({ status: 401, description: 'API Key inválida o no proporcionada.' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'Clave de administración',
+    required: true,
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Viaje creado con sus boletos exitosamente.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'API Key inválida o no proporcionada.',
+  })
   @ApiResponse({ status: 400, description: 'Datos de entrada inválidos.' })
   @ApiResponse({ status: 404, description: 'Ruta no encontrada.' })
   create(@Body() createViajeDto: CreateViajeDto) {

@@ -7,12 +7,18 @@ export class CreateViajeDto {
   @IsNotEmpty()
   ruta_id: number;
 
-  @ApiProperty({ description: 'Fecha y hora de salida en formato ISO 8601', example: '2026-06-01T10:00:00Z' })
+  @ApiProperty({
+    description: 'Fecha y hora de salida en formato ISO 8601',
+    example: '2026-06-01T10:00:00Z',
+  })
   @IsDateString()
   @IsNotEmpty()
   fecha_hora_salida: string;
 
-  @ApiProperty({ description: 'Capacidad total del viaje (número de asientos)', example: 40 })
+  @ApiProperty({
+    description: 'Capacidad total del viaje (número de asientos)',
+    example: 40,
+  })
   @IsInt()
   @Min(1)
   @IsNotEmpty()

@@ -24,7 +24,9 @@ export class ViajesService {
    * Buscar viajes por origen, destino y fecha.
    * Retorna cada viaje con un campo calculado `asientos_disponibles`.
    */
-  async buscar(query: BuscarViajesQueryDto): Promise<ViajeConDisponibilidadDto[]> {
+  async buscar(
+    query: BuscarViajesQueryDto,
+  ): Promise<ViajeConDisponibilidadDto[]> {
     const { origen, destino, fecha } = query;
 
     const fechaInicio = `${fecha}T00:00:00`;
@@ -76,7 +78,9 @@ export class ViajesService {
    * se envía al frontend marcado como `disponible`.
    */
   async getBoletosByViajeId(viajeId: number): Promise<Boleto[]> {
-    const viaje = await this.viajeRepository.findOne({ where: { id: viajeId } });
+    const viaje = await this.viajeRepository.findOne({
+      where: { id: viajeId },
+    });
     if (!viaje) {
       throw new NotFoundException(`Viaje con ID ${viajeId} no encontrado`);
     }
