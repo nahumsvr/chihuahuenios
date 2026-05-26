@@ -4,9 +4,9 @@ services:
     container_name: chihuahuenos_db
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
-      POSTGRES_DB: chihuahuenos_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
@@ -22,8 +22,8 @@ services:
       - "9000:9000" # API S3
       - "9001:9001" # Consola Web
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadminsecret
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     volumes:
       - miniodata:/data
     command: server /data --console-address ":9001"
@@ -37,16 +37,22 @@ services:
     container_name: chihuahuenos_backend
     restart: always
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
     environment:
-      NODE_ENV: development
-      PORT: 3000
-      DATABASE_URL: postgresql://postgres:postgrespassword@postgres:5432/chihuahuenos_db?schema=public
-      MINIO_ENDPOINT: http://minio:9000
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadminsecret
-      MINIO_BUCKET_NAME: identificaciones
-      ADMIN_API_KEY: secreto-admin-key-2026
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
+      ADMIN_API_KEY: ${ADMIN_API_KEY}
     depends_on:
       - postgres
       - minio
@@ -62,11 +68,11 @@ services:
     ports:
       - "8000:3000" # Mapea el puerto 3000 interno de Next al 8000 del host para no chocar con NestJS
     environment:
-      NODE_ENV: development
+      NODE_ENV: ${NODE_ENV}
       # URL utilizada por componentes ejecutados en el Navegador (Fuera de Docker)
-      NEXT_PUBLIC_API_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
       # URL utilizada por Server Components para fetch interno directo (Dentro de Docker)
-      API_INTERNAL_URL: http://backend:3000
+      API_INTERNAL_URL: ${API_INTERNAL_URL}
     depends_on:
       - backend
     networks:
