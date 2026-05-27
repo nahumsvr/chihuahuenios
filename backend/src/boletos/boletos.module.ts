@@ -8,6 +8,7 @@ import { Boleto } from '@/viajes/entities/boleto.entity';
 import { User } from '@/users/entities/user.entity';
 import { StorageModule } from '@/storage/storage.module';
 import { AuthGuard } from '@/auth/auth.guard';
+import { RolesGuard } from '@/auth/guards/roles.guard';
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import { AuthGuard } from '@/auth/auth.guard';
     }),
   ],
   controllers: [BoletosController],
-  providers: [BoletosService, AuthGuard],
+  providers: [BoletosService, AuthGuard, RolesGuard],
 })
 export class BoletosModule {}

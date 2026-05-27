@@ -7,7 +7,6 @@ import {
   Query,
   Param,
   ParseIntPipe,
-  UseGuards,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -15,8 +14,7 @@ import {
   ApiTags,
   ApiOperation,
   ApiResponse,
-  ApiHeader,
-  ApiSecurity,
+  ApiBearerAuth,
   ApiParam,
 } from '@nestjs/swagger';
 import { ViajesService } from '@/viajes/viajes.service';
@@ -24,7 +22,7 @@ import { CreateViajeDto } from '@/viajes/dto/create-viaje.dto';
 import { BuscarViajesQueryDto } from '@/viajes/dto/buscar-viajes-query.dto';
 import { ViajeConDisponibilidadDto } from '@/viajes/dto/viaje-con-disponibilidad.dto';
 import { ViajesDisponiblesQueryDto } from '@/viajes/dto/viajes-disponibles-query.dto';
-import { ApiKeyGuard } from '@/auth/guards/api-key.guard';
+import { Auth } from '@/auth/decorators/auth.decorator';
 
 @ApiTags('Viajes')
 @Controller('api/viajes')
@@ -73,23 +71,16 @@ export class ViajesController {
   }
 
   @Post()
-  @UseGuards(ApiKeyGuard)
+  @Auth('admin')
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
-  @ApiSecurity('x-api-key')
-  @ApiOperation({ summary: 'Crear un nuevo viaje con sus boletos' })
-  @ApiHeader({
-    name: 'x-api-key',
-    description: 'Clave de administración',
-    required: true,
-  })
+  @ApiOperation({ summary: 'Crear un nuevo viaje con sus boletos (solo admin)' })
   @ApiResponse({
     status: 201,
     description: 'Viaje creado con sus boletos exitosamente.',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'API Key inválida o no proporcionada.',
-  })
+  @ApiResponse({ status: 401, description: 'Token JWT no proporcionado.' })
+  @ApiResponse({ status: 403, description: 'Se requiere rol de administrador.' })
   @ApiResponse({ status: 400, description: 'Datos de entrada inválidos.' })
   @ApiResponse({ status: 404, description: 'Ruta no encontrada.' })
   create(@Body() createViajeDto: CreateViajeDto) {
@@ -97,19 +88,15 @@ export class ViajesController {
   }
 
   @Delete(':id')
-  @UseGuards(ApiKeyGuard)
+  @Auth('admin')
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiSecurity('x-api-key')
-  @ApiOperation({ summary: 'Eliminar un viaje si no tiene boletos vendidos' })
-  @ApiHeader({
-    name: 'x-api-key',
-    description: 'Clave de administración',
-    required: true,
-  })
+  @ApiOperation({ summary: 'Eliminar un viaje si no tiene boletos vendidos (solo admin)' })
   @ApiParam({ name: 'id', description: 'ID del viaje a eliminar', type: Number })
   @ApiResponse({ status: 204, description: 'Viaje eliminado exitosamente.' })
   @ApiResponse({ status: 400, description: 'El viaje tiene boletos vendidos.' })
-  @ApiResponse({ status: 401, description: 'API Key inválida o no proporcionada.' })
+  @ApiResponse({ status: 401, description: 'Token JWT no proporcionado.' })
+  @ApiResponse({ status: 403, description: 'Se requiere rol de administrador.' })
   @ApiResponse({ status: 404, description: 'Viaje no encontrado.' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.viajesService.delete(id);

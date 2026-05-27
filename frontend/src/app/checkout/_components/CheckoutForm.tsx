@@ -79,6 +79,19 @@ export default function CheckoutForm({ token }: { token: string }) {
     }
 
     if (result.success) {
+      // Guardar código del boleto para mostrarlo en la página de éxito
+      if (result.codigo_boleto) {
+        const reservaData = sessionStorage.getItem("reserva_activa");
+        const reserva = reservaData ? JSON.parse(reservaData) : {};
+        sessionStorage.setItem(
+          "boleto_confirmado",
+          JSON.stringify({
+            ...reserva,
+            codigo_boleto: result.codigo_boleto,
+            boleto_id: result.boleto_id,
+          })
+        );
+      }
       sessionStorage.removeItem("reserva_activa");
       router.push("/checkout/success");
     }

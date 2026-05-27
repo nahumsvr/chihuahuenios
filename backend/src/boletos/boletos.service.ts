@@ -125,15 +125,19 @@ export class BoletosService {
       'identificaciones',
     );
 
-    // 4. Transacción: actualizar boleto + usuario
+    // 4. Generar código único del boleto
+    const codigoBoleto = uuidv4();
+
+    // 5. Transacción: actualizar boleto + usuario
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
-      // Actualizar boleto: pagado, limpiar token, vincular usuario
+      // Actualizar boleto: pagado, limpiar token, vincular usuario, asignar código
       boleto.estado = 'pagado';
       boleto.reserva_token = null;
+      boleto.codigo_boleto = codigoBoleto;
       boleto.usuario_id = usuarioId;
       await queryRunner.manager.save(boleto);
 
@@ -145,12 +149,13 @@ export class BoletosService {
       await queryRunner.commitTransaction();
 
       this.logger.log(
-        `Boleto ${boleto.id} confirmado por usuario ${usuarioId}`,
+        `Boleto ${boleto.id} confirmado por usuario ${usuarioId} — código: ${codigoBoleto}`,
       );
 
       return {
         mensaje: 'Compra exitosa',
         boleto_id: boleto.id,
+        codigo_boleto: codigoBoleto,
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -158,5 +163,36 @@ export class BoletosService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  /**
+   * Obtener todos los boletos pagados del usuario autenticado,
+   * con información del viaje y la ruta.
+   */
+  async getMisCompras(usuarioId: string) {
+    const boletos = await this.boletoRepository.find({
+      where: { usuario_id: usuarioId, estado: 'pagado' },
+      relations: { viaje: { ruta: true } },
+      order: { viaje: { fecha_hora_salida: 'DESC' } },
+    });
+
+    return boletos.map((boleto) => ({
+      id: boleto.id,
+      codigo_boleto: boleto.codigo_boleto,
+      numero_asiento: boleto.numero_asiento,
+      precio: Number(boleto.precio),
+      viaje: {
+        id: boleto.viaje.id,
+        fecha_hora_salida: boleto.viaje.fecha_hora_salida,
+        fecha_hora_llegada: boleto.viaje.fecha_hora_llegada,
+        duracion: boleto.viaje.duracion,
+        precio_boleto: Number(boleto.viaje.precio_boleto),
+        ruta: {
+          id: boleto.viaje.ruta.id,
+          origen: boleto.viaje.ruta.origen,
+          destino: boleto.viaje.ruta.destino,
+        },
+      },
+    }));
   }
 }

@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   Param,
   Body,
@@ -29,6 +30,21 @@ import { ConfirmarBoletoDto } from '@/boletos/dto/confirmar-boleto.dto';
 @Controller('api/boletos')
 export class BoletosController {
   constructor(private readonly boletosService: BoletosService) {}
+
+  @Get('mis-compras')
+  @Auth()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Obtener todas las compras del usuario autenticado',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de boletos pagados con información del viaje y ruta.',
+  })
+  @ApiResponse({ status: 401, description: 'Token JWT no proporcionado o inválido.' })
+  getMisCompras(@CurrentUser() user: { sub: string }) {
+    return this.boletosService.getMisCompras(user.sub);
+  }
 
   @Post(':id/reservar')
   @Auth()
@@ -119,6 +135,7 @@ export class BoletosController {
       example: {
         mensaje: 'Compra exitosa',
         boleto_id: 123,
+        codigo_boleto: '550e8400-e29b-41d4-a716-446655440000',
       },
     },
   })

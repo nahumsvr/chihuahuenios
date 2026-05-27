@@ -39,6 +39,9 @@ export class Boleto {
   @Column({ type: 'uuid', nullable: true, unique: true })
   reserva_token: string | null;
 
+  @Column({ type: 'uuid', nullable: true, unique: true })
+  codigo_boleto: string | null;
+
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'usuario_id' })
   usuario: User | null;

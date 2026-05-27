@@ -38,7 +38,11 @@ export async function confirmarCompraAction(prevState: unknown, formData: FormDa
       return { error: data?.message || "Ocurrió un error al confirmar la compra." };
     }
 
-    return { success: true };
+    return {
+      success: true,
+      boleto_id: data.boleto_id,
+      codigo_boleto: data.codigo_boleto,
+    };
   } catch (error) {
     console.error("Error en confirmarCompraAction:", error);
     return { error: "Error de conexión con el servidor." };

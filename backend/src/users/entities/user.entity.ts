@@ -6,6 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export type UserRole = 'usuario' | 'admin';
+
 @Entity('usuarios')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -22,6 +24,13 @@ export class User {
 
   @Column({ nullable: true })
   identificacion_url: string;
+
+  @Column({
+    type: 'enum',
+    enum: ['usuario', 'admin'],
+    default: 'usuario',
+  })
+  rol: UserRole;
 
   @CreateDateColumn()
   created_at: Date;

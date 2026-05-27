@@ -1,5 +1,7 @@
 // Interfaces y tipos globales de la aplicación
 
+export type UserRole = 'usuario' | 'admin';
+
 export interface Employee {
   employeeId: string;
   name?: string;
@@ -9,7 +11,9 @@ export interface Employee {
 export interface User {
   id: string;
   email: string;
-  // Añadir más campos según se requiera
+  nombre: string;
+  rol: UserRole;
+  identificacion_url?: string;
 }
 
 export interface RutaResumen {
@@ -36,3 +40,19 @@ export interface Boleto {
   estado: 'disponible' | 'reservado' | 'pagado';
   bloqueado_hasta?: string | null;
 }
+
+export interface CompraResumen {
+  id: number;
+  codigo_boleto: string;
+  numero_asiento: number;
+  precio: number;
+  viaje: {
+    id: number;
+    fecha_hora_salida: string;
+    fecha_hora_llegada: string;
+    duracion: number;
+    precio_boleto: number;
+    ruta: RutaResumen;
+  };
+}
+

@@ -1,9 +1,20 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
+  ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
 import { AuthService } from '@/auth/auth.service';
 import { RegisterDto } from '@/auth/dto/register.dto';
@@ -17,14 +28,53 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @UseInterceptors(
+    FileInterceptor('identificacion', {
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+      fileFilter: (_req, file, cb) => {
+        const allowedMimes = ['image/png', 'image/jpeg', 'application/pdf'];
+        if (!allowedMimes.includes(file.mimetype)) {
+          cb(
+            new BadRequestException(
+              'Tipo de archivo no permitido. Solo se aceptan PDF, PNG y JPG.',
+            ),
+            false,
+          );
+          return;
+        }
+        cb(null, true);
+      },
+    }),
+  )
   @ApiOperation({ summary: 'Registrar un nuevo usuario' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Datos de registro con documento de identidad',
+    schema: {
+      type: 'object',
+      required: ['nombre', 'email', 'password'],
+      properties: {
+        nombre: { type: 'string', example: 'Juan Pérez' },
+        email: { type: 'string', example: 'juan.perez@example.com' },
+        password: { type: 'string', example: 'secret123' },
+        identificacion: {
+          type: 'string',
+          format: 'binary',
+          description: 'Documento de identidad (PDF, PNG, JPG, max 5MB)',
+        },
+      },
+    },
+  })
   @ApiResponse({ status: 201, description: 'Usuario registrado exitosamente.' })
   @ApiResponse({
     status: 400,
     description: 'Datos de registro inválidos o correo ya registrado.',
   })
-  register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+  register(
+    @Body() registerDto: RegisterDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.authService.register(registerDto, file);
   }
 
   @Post('login')
