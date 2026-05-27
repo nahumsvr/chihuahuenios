@@ -59,10 +59,13 @@ export default function SeatMap({ boletos, isAuthenticated, viajeId }: SeatMapPr
     }
 
     if (result.success && result.reserva_token) {
+      const selectedBoleto = boletos.find(b => b.id === selectedAsientoId);
       sessionStorage.setItem(
         "reserva_activa",
         JSON.stringify({
           boletoId: selectedAsientoId,
+          numero_asiento: selectedBoleto?.numero_asiento,
+          viajeId: viajeId,
           token: result.reserva_token,
         })
       );
