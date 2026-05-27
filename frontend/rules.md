@@ -1,4 +1,4 @@
-El proyecto está construido utilizando _Next.js 14 (App Router)_ y _React 18_ con _Tailwind CSS_ y _DaisyUI_ para los estilos.
+El proyecto está construido utilizando _Next.js 14 (App Router)_ y _React 18_ con _Tailwind CSS_ y _DaisyUI_ [https://daisyui.com/docs/install/nextjs/] para los estilos.
 
 ---
 
@@ -154,6 +154,6 @@ La seguridad y redirecciones a nivel de aplicación se manejan con un sistema de
 
 1.⁠ ⁠*App Router Primero:* Toda la lógica de enrutamiento va en ⁠ app/ ⁠.
 2.⁠ ⁠*Server-First:* Prefiere Server Components para fetching. Usa ⁠ "use client" ⁠ estrictamente solo cuando necesites interactividad (⁠ onClick ⁠, ⁠ useState ⁠, ⁠ hooks ⁠ de React/Next de cliente).
-3.⁠ ⁠*Co-locación de Componentes:* Guarda los componentes específicos de una página dentro de una subcarpeta ⁠ _components ⁠ junto a ella.
+3.⁠ ⁠*Co-locación de Componentes:* Guarda los componentes específicos de una página dentro de una subcarpeta ⁠ *components ⁠ junto a ella.
 4.⁠ ⁠*Server Actions para Mutaciones:* Todo POST/PUT/PATCH debe ir dentro de la carpeta ⁠ actions/ ⁠ y ser invocado desde un formulario de cliente o servidor.
-5.⁠ ⁠*Autenticación Centralizada:* Utiliza ⁠ AuthHeaders() ⁠ para cualquier petición hacia la API. 6. _Resolución de Params:_ Recuerda que en Next 14 `params` y `searchParams` en `page.tsx` son objetos síncronos y se acceden directamente (sin `await`).
+5.⁠ ⁠*Autenticación Centralizada:* Utiliza ⁠ AuthHeaders() ⁠ para cualquier petición hacia la API. 6. \_Resolución de Params:* Recuerda que en Next 14 `params` y `searchParams` en `page.tsx` son objetos síncronos y se acceden directamente (sin `await`).

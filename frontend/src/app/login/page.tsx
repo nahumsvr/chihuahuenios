@@ -3,6 +3,7 @@
 import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useFormState, useFormStatus } from "react-dom";
 import {
   Mail,
   Lock,
@@ -11,59 +12,36 @@ import {
   AlertTriangle,
   CheckCircle2,
 } from "lucide-react";
+import { loginAction } from "../../actions/auth/login";
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      className="btn btn-primary w-full font-bold mt-2 text-white"
+      disabled={pending}
+    >
+      {pending && (
+        <span className="loading loading-spinner loading-sm" />
+      )}
+      {pending ? "Iniciando Sesión..." : "Iniciar Sesión"}
+    </button>
+  );
+}
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   // Redirección por query param (ej. /checkout) o por defecto a /
   const redirectPath = searchParams.get("redirect") || "/";
   const wasRegistered = searchParams.get("registered") === "true";
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrorMsg("");
-
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Credenciales incorrectas");
-      }
-
-      // Guardar JWT en localStorage
-      localStorage.setItem("token", data.access_token);
-
-      // Redirigir a la página previa o al inicio
-      router.push(redirectPath);
-      router.refresh();
-    } catch (err: unknown) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Hubo un problema al iniciar sesión. Inténtalo de nuevo.";
-      setErrorMsg(message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [state, formAction] = useFormState(loginAction, null);
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07070a] px-4 py-12">
@@ -86,7 +64,7 @@ function LoginForm() {
           </div>
 
           {/* Alerta de Registro Exitoso */}
-          {wasRegistered && !errorMsg && (
+          {wasRegistered && !state?.errorMsg && (
             <div className="alert alert-success bg-success/15 border-success/20 text-success flex items-start gap-3 p-3 rounded-lg">
               <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5" />
               <div className="text-sm font-medium">
@@ -96,14 +74,15 @@ function LoginForm() {
           )}
 
           {/* Alerta de Error de Inicio de Sesión */}
-          {errorMsg && (
+          {state?.errorMsg && (
             <div className="alert alert-error bg-error/15 border-error/20 text-error flex items-start gap-3 p-3 rounded-lg">
               <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
-              <div className="text-sm font-medium">{errorMsg}</div>
+              <div className="text-sm font-medium">{state.errorMsg}</div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <form action={formAction} className="flex flex-col gap-5">
+            <input type="hidden" name="redirectPath" value={redirectPath} />
             <div className="form-control w-full">
               <label className="label py-1" htmlFor="email">
                 <span className="label-text font-medium text-gray-300">
@@ -119,8 +98,6 @@ function LoginForm() {
                   className="grow text-white bg-transparent placeholder-gray-500"
                   placeholder="correo@ejemplo.com"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   autoComplete="username"
                 />
               </label>
@@ -141,8 +118,6 @@ function LoginForm() {
                   className="grow text-white bg-transparent placeholder-gray-500"
                   placeholder="••••••••"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                 />
                 <button
@@ -160,16 +135,7 @@ function LoginForm() {
               </label>
             </div>
 
-            <button
-              type="submit"
-              className="btn btn-primary w-full font-bold mt-2 text-white"
-              disabled={isLoading}
-            >
-              {isLoading && (
-                <span className="loading loading-spinner loading-sm" />
-              )}
-              {isLoading ? "Iniciando Sesión..." : "Iniciar Sesión"}
-            </button>
+            <SubmitButton />
           </form>
 
           <div className="text-center text-sm mt-4">
