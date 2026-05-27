@@ -4,7 +4,7 @@
 
 - Framework: Next.js 14 (App Router obligatorio). No uses la carpeta `pages/`.
 - Motor obligatorio: Node v20 (LTS) con React 18 y Tailwind CSS v3.
-- Librería de UI: HeroUI v2 (obligatorio usar `@heroui/react` versión `2.8.10` y `@heroui/theme` versión `2.4.26`, ya que HeroUI v3 requiere React 19 y es incompatible con Next 14).
+- Librería de UI: DaisyUI (complemento de Tailwind).
 - Estilos: Tailwind CSS v3.
 
 ## 2. Red y Variables de Entorno (Docker Bridge)
