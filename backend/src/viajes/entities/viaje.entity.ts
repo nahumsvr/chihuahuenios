@@ -24,6 +24,12 @@ export class Viaje {
   @Column({ type: 'timestamptz' })
   fecha_hora_salida: Date;
 
+  @Column({ type: 'timestamptz', nullable: true })
+  fecha_hora_llegada: Date;
+
+  @Column({ type: 'int', nullable: true })
+  duracion: number;
+
   @OneToMany(() => Boleto, (boleto) => boleto.viaje)
   boletos: Boleto[];
 }

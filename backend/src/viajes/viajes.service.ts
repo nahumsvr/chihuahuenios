@@ -66,6 +66,8 @@ export class ViajesService {
           destino: viaje.ruta.destino,
         },
         fecha_hora_salida: viaje.fecha_hora_salida,
+        fecha_hora_llegada: viaje.fecha_hora_llegada,
+        duracion: viaje.duracion,
         asientos_disponibles: totalBoletos - ocupados,
         total_asientos: totalBoletos,
       };
@@ -111,13 +113,16 @@ export class ViajesService {
   }
 
   async create(createViajeDto: CreateViajeDto): Promise<Viaje> {
-    const { ruta_id, fecha_hora_salida, capacidad } = createViajeDto;
+    const { ruta_id, fecha_hora_inicio, duracion, capacidad } = createViajeDto;
 
     // Verificar que la ruta exista
     const ruta = await this.rutaRepository.findOne({ where: { id: ruta_id } });
     if (!ruta) {
       throw new NotFoundException(`Ruta con ID ${ruta_id} no encontrada`);
     }
+
+    const fechaHoraSalida = new Date(fecha_hora_inicio);
+    const fechaHoraLlegada = new Date(fechaHoraSalida.getTime() + duracion * 60 * 1000);
 
     // Transacción: crear viaje + bulk insert de boletos
     const queryRunner = this.dataSource.createQueryRunner();
@@ -128,7 +133,9 @@ export class ViajesService {
       // Insertar el viaje
       const viaje = queryRunner.manager.create(Viaje, {
         ruta_id,
-        fecha_hora_salida: new Date(fecha_hora_salida),
+        fecha_hora_salida: fechaHoraSalida,
+        fecha_hora_llegada: fechaHoraLlegada,
+        duracion,
       });
       const savedViaje = await queryRunner.manager.save(viaje);
 

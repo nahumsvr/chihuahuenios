@@ -311,7 +311,8 @@ The API supports the following security schemes:
   | Field | Type | Required | Description | Example |
   |---|---|---|---|---|
   | `ruta_id` | `number` | Yes | ID de la ruta asociada | 1 |
-  | `fecha_hora_salida` | `string` | Yes | Fecha y hora de salida en formato ISO 8601 | "2026-06-01T10:00:00Z" |
+  | `fecha_hora_inicio` | `string` | Yes | Fecha y hora de inicio en formato ISO 8601 | "2026-06-01T10:00:00Z" |
+  | `duracion` | `number` | Yes | Duración del viaje en minutos | 120 |
   | `capacidad` | `number` | Yes | Capacidad total del viaje (número de asientos) | 40 |
 
 
@@ -458,6 +459,8 @@ The API supports the following security schemes:
 | `id` | `number` | Yes | - | 1 |
 | `ruta` | `undefined` | Yes | - | - |
 | `fecha_hora_salida` | `string (date-time)` | Yes | - | "2026-06-01T10:00:00.000Z" |
+| `fecha_hora_llegada` | `string (date-time)` | Yes | Fecha y hora de llegada calculada | "2026-06-01T12:00:00.000Z" |
+| `duracion` | `number` | Yes | Duración del viaje en minutos | 120 |
 | `asientos_disponibles` | `number` | Yes | Asientos no ocupados ni reservados activamente | 35 |
 | `total_asientos` | `number` | Yes | Total de asientos del viaje | 40 |
 
@@ -466,6 +469,7 @@ The API supports the following security schemes:
 | Field | Type | Required | Description | Example |
 |---|---|---|---|---|
 | `ruta_id` | `number` | Yes | ID de la ruta asociada | 1 |
-| `fecha_hora_salida` | `string` | Yes | Fecha y hora de salida en formato ISO 8601 | "2026-06-01T10:00:00Z" |
+| `fecha_hora_inicio` | `string` | Yes | Fecha y hora de inicio en formato ISO 8601 | "2026-06-01T10:00:00Z" |
+| `duracion` | `number` | Yes | Duración del viaje en minutos | 120 |
 | `capacidad` | `number` | Yes | Capacidad total del viaje (número de asientos) | 40 |
 

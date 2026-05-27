@@ -21,6 +21,12 @@ export class ViajeConDisponibilidadDto {
   @ApiProperty({ example: '2026-06-01T10:00:00.000Z' })
   fecha_hora_salida: Date;
 
+  @ApiProperty({ example: '2026-06-01T12:00:00.000Z', description: 'Fecha y hora de llegada calculada' })
+  fecha_hora_llegada: Date;
+
+  @ApiProperty({ example: 120, description: 'Duración del viaje en minutos' })
+  duracion: number;
+
   @ApiProperty({
     description: 'Asientos no ocupados ni reservados activamente',
     example: 35,
