@@ -2,7 +2,7 @@
 
 import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card, CardHeader, CardBody, Input, Button, Link } from "@heroui/react";
+import Link from "next/link";
 import { Mail, Lock, Eye, EyeOff, User, AlertTriangle } from "lucide-react";
 
 function RegisterForm() {
@@ -65,127 +65,127 @@ function RegisterForm() {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07070a] px-4 py-12">
       {/* Círculos decorativos de gradiente (Glow effects) */}
-      <div className="absolute top-1/4 left-1/4 h-[350px] w-[350px] rounded-full bg-violet-600/15 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 h-[300px] w-[300px] rounded-full bg-primary/20 blur-[90px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 h-[350px] w-[350px] rounded-full bg-secondary/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 h-[300px] w-[300px] rounded-full bg-primary/10 blur-[100px] pointer-events-none" />
 
-      <Card className="w-full max-w-md border border-white/5 bg-black/40 backdrop-blur-xl p-4 shadow-2xl">
-        <CardHeader className="flex flex-col items-center gap-1 pb-6 pt-8">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 mb-2">
-            <User className="h-6 w-6 text-primary" />
+      <div className="card w-full max-w-md bg-black/40 backdrop-blur-xl border border-white/5 shadow-2xl p-6">
+        <div className="card-body p-2 flex flex-col gap-6">
+          <div className="flex flex-col items-center gap-1 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 mb-2">
+              <User className="h-6 w-6 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-white font-sans">Crear Cuenta</h1>
+            <p className="text-sm text-gray-400">
+              Regístrate para reservar tus boletos de autobús
+            </p>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white font-sans">Crear Cuenta</h1>
-          <p className="text-sm text-default-400 text-center">
-            Regístrate para reservar tus boletos de autobús
-          </p>
-        </CardHeader>
-        <CardBody>
+
           {/* Alerta de Error de Registro */}
           {errorMsg && (
-            <div className="mb-6 flex items-start gap-3 rounded-lg border border-danger-500/20 bg-danger-500/10 p-3 text-danger-400">
+            <div className="alert alert-error bg-error/15 border-error/20 text-error flex items-start gap-3 p-3 rounded-lg">
               <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
               <div className="text-sm font-medium">{errorMsg}</div>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            <Input
-              type="text"
-              name="nombre"
-              id="nombre"
-              label="Nombre completo"
-              placeholder="Juan Pérez"
-              labelPlacement="outside"
-              variant="bordered"
-              isRequired
-              value={nombre}
-              onValueChange={setNombre}
-              autoComplete="name"
-              startContent={<User className="h-4 w-4 text-default-400 pointer-events-none" />}
-              classNames={{
-                inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-primary",
-                label: "text-default-300 font-medium",
-              }}
-            />
+            <div className="form-control w-full">
+              <label className="label py-1" htmlFor="nombre">
+                <span className="label-text font-medium text-gray-300">Nombre completo</span>
+              </label>
+              <label className="input input-bordered flex items-center gap-3 bg-white/[0.03] border-white/10 focus-within:border-primary focus-within:outline-none transition">
+                <User className="h-4 w-4 text-gray-400 pointer-events-none" />
+                <input
+                  type="text"
+                  name="nombre"
+                  id="nombre"
+                  className="grow text-white bg-transparent placeholder-gray-500"
+                  placeholder="Juan Pérez"
+                  required
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  autoComplete="name"
+                />
+              </label>
+            </div>
 
-            <Input
-              type="email"
-              name="email"
-              id="email"
-              label="Correo electrónico"
-              placeholder="correo@ejemplo.com"
-              labelPlacement="outside"
-              variant="bordered"
-              isRequired
-              value={email}
-              onValueChange={setEmail}
-              autoComplete="username"
-              startContent={<Mail className="h-4 w-4 text-default-400 pointer-events-none" />}
-              classNames={{
-                inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-primary",
-                label: "text-default-300 font-medium",
-              }}
-            />
+            <div className="form-control w-full">
+              <label className="label py-1" htmlFor="email">
+                <span className="label-text font-medium text-gray-300">Correo electrónico</span>
+              </label>
+              <label className="input input-bordered flex items-center gap-3 bg-white/[0.03] border-white/10 focus-within:border-primary focus-within:outline-none transition">
+                <Mail className="h-4 w-4 text-gray-400 pointer-events-none" />
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  className="grow text-white bg-transparent placeholder-gray-500"
+                  placeholder="correo@ejemplo.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="username"
+                />
+              </label>
+            </div>
 
-            <Input
-              type={isVisible ? "text" : "password"}
-              name="new-password"
-              id="new-password"
-              label="Contraseña"
-              placeholder="Mínimo 6 caracteres"
-              labelPlacement="outside"
-              variant="bordered"
-              isRequired
-              value={password}
-              onValueChange={setPassword}
-              autoComplete="new-password"
-              startContent={<Lock className="h-4 w-4 text-default-400 pointer-events-none" />}
-              endContent={
+            <div className="form-control w-full">
+              <label className="label py-1" htmlFor="new-password">
+                <span className="label-text font-medium text-gray-300">Contraseña</span>
+              </label>
+              <label className="input input-bordered flex items-center gap-3 bg-white/[0.03] border-white/10 focus-within:border-primary focus-within:outline-none transition">
+                <Lock className="h-4 w-4 text-gray-400 pointer-events-none" />
+                <input
+                  type={isVisible ? "text" : "password"}
+                  name="new-password"
+                  id="new-password"
+                  className="grow text-white bg-transparent placeholder-gray-500"
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
+                />
                 <button
-                  className="focus:outline-none"
+                  className="focus:outline-none hover:text-white transition text-gray-400"
                   type="button"
                   onClick={toggleVisibility}
                   aria-label="Toggle password visibility"
                 >
                   {isVisible ? (
-                    <EyeOff className="h-4 w-4 text-default-400" />
+                    <EyeOff className="h-4 w-4" />
                   ) : (
-                    <Eye className="h-4 w-4 text-default-400" />
+                    <Eye className="h-4 w-4" />
                   )}
                 </button>
-              }
-              classNames={{
-                inputWrapper: "border-white/10 hover:border-white/20 focus-within:!border-primary",
-                label: "text-default-300 font-medium",
-              }}
-            />
+              </label>
+            </div>
 
-            <Button
+            <button
               type="submit"
-              color="primary"
-              variant="solid"
-              className="w-full font-bold mt-2"
-              isLoading={isLoading}
+              className="btn btn-primary w-full font-bold mt-2 text-white"
+              disabled={isLoading}
             >
-              Registrarse
-            </Button>
+              {isLoading && <span className="loading loading-spinner loading-sm" />}
+              {isLoading ? "Creando Cuenta..." : "Registrarse"}
+            </button>
           </form>
 
-          <div className="mt-8 text-center text-sm">
-            <span className="text-default-400">¿Ya tienes una cuenta? </span>
+          <div className="text-center text-sm mt-4">
+            <span className="text-gray-400">¿Ya tienes una cuenta? </span>
             <Link
               href={
                 redirectPath !== "/"
                   ? `/login?redirect=${encodeURIComponent(redirectPath)}`
                   : "/login"
               }
-              size="sm"
               className="text-primary font-semibold hover:underline"
             >
               Inicia sesión
             </Link>
           </div>
-        </CardBody>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
@@ -195,7 +195,7 @@ export default function RegisterPage() {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-[#07070a] text-white">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <div className="loading loading-spinner loading-lg text-primary" />
         </div>
       }
     >

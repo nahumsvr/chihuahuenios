@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@heroui/react": "^2.8.10",
-    "@heroui/theme": "^2.4.17",
     "framer-motion": "^11.18.2",
     "lucide-react": "^1.16.0",
     "next": "14.2.35",
@@ -21,6 +19,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "daisyui": "^4.12.24",
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
     "postcss": "^8",

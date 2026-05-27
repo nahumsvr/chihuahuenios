@@ -1,12 +1,11 @@
 import type { Config } from "tailwindcss";
-import { heroui } from "@heroui/theme";
+import daisyui from "daisyui";
 
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -16,7 +15,6 @@ const config: Config = {
       },
     },
   },
-  darkMode: "class",
-  plugins: [heroui()],
+  plugins: [daisyui],
 };
 export default config;
