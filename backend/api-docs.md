@@ -291,6 +291,20 @@ The API supports the following security schemes:
 
 ---
 
+#### `GET /api/viajes/disponibles`
+
+**Summary**: Obtener todos los viajes futuros con su disponibilidad (todas las rutas y horarios)
+
+**Authentication Required**: No
+
+**Responses**:
+
+- **Status `200`**: Lista de todos los viajes a partir de la fecha y hora actual.
+  - Content-Type: `application/json`
+  - Schema: Array of [ViajeConDisponibilidadDto](#viajecondisponibilidaddto)
+
+---
+
 #### `POST /api/viajes`
 
 **Summary**: Crear un nuevo viaje con sus boletos

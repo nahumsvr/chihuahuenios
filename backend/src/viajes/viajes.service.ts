@@ -166,4 +166,45 @@ export class ViajesService {
       await queryRunner.release();
     }
   }
+
+  /**
+   * Obtener todos los viajes futuros con su disponibilidad (todas las rutas y horarios)
+   */
+  async obtenerDisponibles(): Promise<ViajeConDisponibilidadDto[]> {
+    const now = new Date();
+
+    const viajes = await this.viajeRepository
+      .createQueryBuilder('viaje')
+      .innerJoinAndSelect('viaje.ruta', 'ruta')
+      .leftJoinAndSelect('viaje.boletos', 'boleto')
+      .where('viaje.fecha_hora_salida >= :now', { now })
+      .orderBy('viaje.fecha_hora_salida', 'ASC')
+      .getMany();
+
+    return viajes.map((viaje) => {
+      const ocupados = viaje.boletos.filter(
+        (b) =>
+          b.estado === 'pagado' ||
+          (b.estado === 'reservado' &&
+            b.bloqueado_hasta &&
+            new Date(b.bloqueado_hasta) > now),
+      ).length;
+
+      const totalBoletos = viaje.boletos.length;
+
+      return {
+        id: viaje.id,
+        ruta: {
+          id: viaje.ruta.id,
+          origen: viaje.ruta.origen,
+          destino: viaje.ruta.destino,
+        },
+        fecha_hora_salida: viaje.fecha_hora_salida,
+        fecha_hora_llegada: viaje.fecha_hora_llegada,
+        duracion: viaje.duracion,
+        asientos_disponibles: totalBoletos - ocupados,
+        total_asientos: totalBoletos,
+      };
+    });
+  }
 }

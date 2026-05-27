@@ -41,6 +41,20 @@ export class ViajesController {
     return this.viajesService.buscar(query);
   }
 
+  @Get('disponibles')
+  @ApiOperation({
+    summary: 'Obtener todos los viajes futuros con su disponibilidad',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Lista de todos los viajes a partir de la fecha y hora actual.',
+    type: [ViajeConDisponibilidadDto],
+  })
+  obtenerDisponibles() {
+    return this.viajesService.obtenerDisponibles();
+  }
+
   @Get(':id/boletos')
   @ApiOperation({
     summary: 'Obtener boletos de un viaje (con Lazy Expiration)',
