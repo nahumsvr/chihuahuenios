@@ -5,7 +5,7 @@ import ViajeCard from "@/app/_components/ViajeCard";
 export default async function ViajesPage() {
   let viajes: ViajeConDisponibilidad[] = [];
   try {
-    const resViajes = await fetch(`${API_URL}/api/viajes`, {
+    const resViajes = await fetch(`${API_URL}/api/viajes/disponibles`, {
       cache: 'no-store'
     });
     if (resViajes.ok) {
