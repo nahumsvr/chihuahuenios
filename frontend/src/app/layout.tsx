@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { HeroUIProvider } from "@heroui/react";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -24,11 +25,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-foreground bg-background`}
       >
-        {children}
+        <HeroUIProvider>
+          {children}
+        </HeroUIProvider>
       </body>
     </html>
   );
