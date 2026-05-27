@@ -30,6 +30,9 @@ export class Viaje {
   @Column({ type: 'int', nullable: true })
   duracion: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  precio_boleto: number;
+
   @OneToMany(() => Boleto, (boleto) => boleto.viaje)
   boletos: Boleto[];
 }

@@ -22,6 +22,9 @@ export interface ViajeConDisponibilidad {
   id: number;
   ruta: RutaResumen;
   fecha_hora_salida: string;
+  fecha_hora_llegada?: string;
+  duracion?: number;
+  precio_boleto?: number;
   asientos_disponibles: number;
   total_asientos: number;
 }

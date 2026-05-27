@@ -1,4 +1,4 @@
-import { IsDateString, IsInt, IsNotEmpty, Min } from 'class-validator';
+import { IsDateString, IsInt, IsNotEmpty, Min, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateViajeDto {
@@ -23,6 +23,16 @@ export class CreateViajeDto {
   @Min(1)
   @IsNotEmpty()
   duracion: number;
+
+  @ApiProperty({
+    description: 'Precio del boleto. Si no se especifica, se calcula a 120 pesos por hora de duración.',
+    required: false,
+    example: 240.00,
+  })
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  precio_boleto?: number;
 
   @ApiProperty({
     description: 'Capacidad total del viaje (número de asientos)',

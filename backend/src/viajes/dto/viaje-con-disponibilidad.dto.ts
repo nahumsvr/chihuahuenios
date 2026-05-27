@@ -27,6 +27,9 @@ export class ViajeConDisponibilidadDto {
   @ApiProperty({ example: 120, description: 'Duración del viaje en minutos' })
   duracion: number;
 
+  @ApiProperty({ example: 240.00, description: 'Precio del boleto' })
+  precio_boleto: number;
+
   @ApiProperty({
     description: 'Asientos no ocupados ni reservados activamente',
     example: 35,

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Viaje } from '@/viajes/entities/viaje.entity';
@@ -69,6 +69,7 @@ export class ViajesService {
         fecha_hora_salida: viaje.fecha_hora_salida,
         fecha_hora_llegada: viaje.fecha_hora_llegada,
         duracion: viaje.duracion,
+        precio_boleto: viaje.precio_boleto,
         asientos_disponibles: totalBoletos - ocupados,
         total_asientos: totalBoletos,
       };
@@ -114,7 +115,7 @@ export class ViajesService {
   }
 
   async create(createViajeDto: CreateViajeDto): Promise<Viaje> {
-    const { ruta_id, fecha_hora_inicio, duracion, capacidad } = createViajeDto;
+    const { ruta_id, fecha_hora_inicio, duracion, precio_boleto, capacidad } = createViajeDto;
 
     // Verificar que la ruta exista
     const ruta = await this.rutaRepository.findOne({ where: { id: ruta_id } });
@@ -124,6 +125,7 @@ export class ViajesService {
 
     const fechaHoraSalida = new Date(fecha_hora_inicio);
     const fechaHoraLlegada = new Date(fechaHoraSalida.getTime() + duracion * 60 * 1000);
+    const precio = precio_boleto ?? (duracion / 60) * 120;
 
     // Transacción: crear viaje + bulk insert de boletos
     const queryRunner = this.dataSource.createQueryRunner();
@@ -137,6 +139,7 @@ export class ViajesService {
         fecha_hora_salida: fechaHoraSalida,
         fecha_hora_llegada: fechaHoraLlegada,
         duracion,
+        precio_boleto: precio,
       });
       const savedViaje = await queryRunner.manager.save(viaje);
 
@@ -149,6 +152,7 @@ export class ViajesService {
           estado: 'disponible',
           bloqueado_hasta: null,
           usuario_id: null,
+          precio: precio,
         });
       }
       await queryRunner.manager.save(Boleto, boletos);
@@ -212,9 +216,51 @@ export class ViajesService {
         fecha_hora_salida: viaje.fecha_hora_salida,
         fecha_hora_llegada: viaje.fecha_hora_llegada,
         duracion: viaje.duracion,
+        precio_boleto: viaje.precio_boleto,
         asientos_disponibles: totalBoletos - ocupados,
         total_asientos: totalBoletos,
       };
     });
+  }
+
+  /**
+   * Eliminar un viaje y sus boletos, pero solo si ningún boleto ha sido vendido (estado = 'pagado')
+   */
+  async delete(id: number): Promise<void> {
+    const viaje = await this.viajeRepository.findOne({
+      where: { id },
+      relations: { boletos: true },
+    });
+
+    if (!viaje) {
+      throw new NotFoundException(`Viaje con ID ${id} no encontrado`);
+    }
+
+    // Verificar si algún boleto ha sido vendido (pagado)
+    const hasSoldBoletos = viaje.boletos.some((b) => b.estado === 'pagado');
+    if (hasSoldBoletos) {
+      throw new BadRequestException(
+        'No se puede eliminar el viaje porque ya se ha vendido al menos un boleto.',
+      );
+    }
+
+    // Transacción para eliminar el viaje y todos sus boletos
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Eliminar boletos asociados
+      await queryRunner.manager.delete(Boleto, { viaje_id: id });
+      // Eliminar el viaje
+      await queryRunner.manager.delete(Viaje, { id });
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

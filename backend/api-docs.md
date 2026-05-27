@@ -333,6 +333,7 @@ The API supports the following security schemes:
   | `ruta_id` | `number` | Yes | ID de la ruta asociada | 1 |
   | `fecha_hora_inicio` | `string` | Yes | Fecha y hora de inicio en formato ISO 8601 | "2026-06-01T10:00:00Z" |
   | `duracion` | `number` | Yes | Duración del viaje en minutos | 120 |
+  | `precio_boleto` | `number` | No | Precio del boleto (si se omite, se calcula a 120 por hora) | 240.00 |
   | `capacidad` | `number` | Yes | Capacidad total del viaje (número de asientos) | 40 |
 
 
@@ -363,6 +364,31 @@ The API supports the following security schemes:
 **Responses**:
 
 - **Status `200`**: Array de boletos. Las reservas expiradas se marcan como disponibles.
+
+- **Status `404`**: Viaje no encontrado.
+
+---
+
+#### `DELETE /api/viajes/{id}`
+
+**Summary**: Eliminar un viaje y sus boletos (solo si no tiene boletos vendidos)
+
+**Authentication Required**: Yes (x-api-key)
+
+**Parameters**:
+
+| Name | In | Required | Type | Description | Example |
+|---|---|---|---|---|---|
+| `x-api-key` | `header` | Yes | `string` | Clave de administración | - |
+| `id` | `path` | Yes | `number` | ID del viaje a eliminar | - |
+
+**Responses**:
+
+- **Status `204`**: Viaje eliminado exitosamente.
+
+- **Status `400`**: No se puede eliminar el viaje porque ya se ha vendido al menos un boleto.
+
+- **Status `401`**: API Key inválida o no proporcionada.
 
 - **Status `404`**: Viaje no encontrado.
 
@@ -481,6 +507,7 @@ The API supports the following security schemes:
 | `fecha_hora_salida` | `string (date-time)` | Yes | - | "2026-06-01T10:00:00.000Z" |
 | `fecha_hora_llegada` | `string (date-time)` | Yes | Fecha y hora de llegada calculada | "2026-06-01T12:00:00.000Z" |
 | `duracion` | `number` | Yes | Duración del viaje en minutos | 120 |
+| `precio_boleto` | `number` | Yes | Precio del boleto | 240.00 |
 | `asientos_disponibles` | `number` | Yes | Asientos no ocupados ni reservados activamente | 35 |
 | `total_asientos` | `number` | Yes | Total de asientos del viaje | 40 |
 
@@ -491,6 +518,7 @@ The API supports the following security schemes:
 | `ruta_id` | `number` | Yes | ID de la ruta asociada | 1 |
 | `fecha_hora_inicio` | `string` | Yes | Fecha y hora de inicio en formato ISO 8601 | "2026-06-01T10:00:00Z" |
 | `duracion` | `number` | Yes | Duración del viaje en minutos | 120 |
+| `precio_boleto` | `number` | No | Precio del boleto (si se omite, se calcula a 120 por hora) | 240.00 |
 | `capacidad` | `number` | Yes | Capacidad total del viaje (número de asientos) | 40 |
 
 ### ViajesDisponiblesQueryDto

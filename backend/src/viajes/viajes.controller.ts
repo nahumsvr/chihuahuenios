@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Body,
   Query,
   Param,
@@ -93,5 +94,24 @@ export class ViajesController {
   @ApiResponse({ status: 404, description: 'Ruta no encontrada.' })
   create(@Body() createViajeDto: CreateViajeDto) {
     return this.viajesService.create(createViajeDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(ApiKeyGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiSecurity('x-api-key')
+  @ApiOperation({ summary: 'Eliminar un viaje si no tiene boletos vendidos' })
+  @ApiHeader({
+    name: 'x-api-key',
+    description: 'Clave de administración',
+    required: true,
+  })
+  @ApiParam({ name: 'id', description: 'ID del viaje a eliminar', type: Number })
+  @ApiResponse({ status: 204, description: 'Viaje eliminado exitosamente.' })
+  @ApiResponse({ status: 400, description: 'El viaje tiene boletos vendidos.' })
+  @ApiResponse({ status: 401, description: 'API Key inválida o no proporcionada.' })
+  @ApiResponse({ status: 404, description: 'Viaje no encontrado.' })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.viajesService.delete(id);
   }
 }
