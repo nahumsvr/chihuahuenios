@@ -11,3 +11,17 @@ export interface User {
   email: string;
   // Añadir más campos según se requiera
 }
+
+export interface RutaResumen {
+  id: number;
+  origen: string;
+  destino: string;
+}
+
+export interface ViajeConDisponibilidad {
+  id: number;
+  ruta: RutaResumen;
+  fecha_hora_salida: string;
+  asientos_disponibles: number;
+  total_asientos: number;
+}

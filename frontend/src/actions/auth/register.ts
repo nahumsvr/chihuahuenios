@@ -3,7 +3,7 @@
 import { API_URL } from "../../constants";
 import { redirect } from "next/navigation";
 
-export async function registerAction(prevState: any, formData: FormData) {
+export async function registerAction(prevState: unknown, formData: FormData) {
   const nombre = formData.get("nombre");
   const email = formData.get("email");
   const password = formData.get("new-password");

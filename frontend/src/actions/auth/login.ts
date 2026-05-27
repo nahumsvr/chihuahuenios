@@ -4,10 +4,10 @@ import { API_URL, TOKEN_NAME } from "../../constants";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function loginAction(prevState: any, formData: FormData) {
+export async function loginAction(prevState: unknown, formData: FormData) {
   const email = formData.get("email");
   const password = formData.get("password");
-  const redirectPath = formData.get("redirectPath") as string || "/";
+  const redirectPath = (formData.get("redirectPath") as string) || "/";
 
   if (!email || !password) {
     return { errorMsg: "El correo y la contraseña son obligatorios" };
@@ -21,6 +21,8 @@ export async function loginAction(prevState: any, formData: FormData) {
       },
       body: JSON.stringify({ email, password }),
     });
+
+    console.log(response);
 
     const data = await response.json();
 
@@ -36,7 +38,9 @@ export async function loginAction(prevState: any, formData: FormData) {
       path: "/",
     });
   } catch (err: unknown) {
-    return { errorMsg: err instanceof Error ? err.message : "Error al iniciar sesión" };
+    return {
+      errorMsg: err instanceof Error ? err.message : "Error al iniciar sesión",
+    };
   }
 
   redirect(redirectPath);
