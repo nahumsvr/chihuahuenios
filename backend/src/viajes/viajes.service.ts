@@ -7,6 +7,7 @@ import { Ruta } from '@/rutas/entities/ruta.entity';
 import { CreateViajeDto } from '@/viajes/dto/create-viaje.dto';
 import { BuscarViajesQueryDto } from '@/viajes/dto/buscar-viajes-query.dto';
 import { ViajeConDisponibilidadDto } from '@/viajes/dto/viaje-con-disponibilidad.dto';
+import { ViajesDisponiblesQueryDto } from '@/viajes/dto/viajes-disponibles-query.dto';
 
 @Injectable()
 export class ViajesService {
@@ -168,16 +169,25 @@ export class ViajesService {
   }
 
   /**
-   * Obtener todos los viajes futuros con su disponibilidad (todas las rutas y horarios)
+   * Obtener todos los viajes futuros con su disponibilidad (opcionalmente filtrado por ruta_id)
    */
-  async obtenerDisponibles(): Promise<ViajeConDisponibilidadDto[]> {
+  async obtenerDisponibles(
+    query: ViajesDisponiblesQueryDto,
+  ): Promise<ViajeConDisponibilidadDto[]> {
+    const { ruta_id } = query;
     const now = new Date();
 
-    const viajes = await this.viajeRepository
+    const queryBuilder = this.viajeRepository
       .createQueryBuilder('viaje')
       .innerJoinAndSelect('viaje.ruta', 'ruta')
       .leftJoinAndSelect('viaje.boletos', 'boleto')
-      .where('viaje.fecha_hora_salida >= :now', { now })
+      .where('viaje.fecha_hora_salida >= :now', { now });
+
+    if (ruta_id) {
+      queryBuilder.andWhere('viaje.ruta_id = :ruta_id', { ruta_id });
+    }
+
+    const viajes = await queryBuilder
       .orderBy('viaje.fecha_hora_salida', 'ASC')
       .getMany();
 

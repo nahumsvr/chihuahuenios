@@ -297,6 +297,12 @@ The API supports the following security schemes:
 
 **Authentication Required**: No
 
+**Parameters**:
+
+| Name | In | Required | Type | Description | Example |
+|---|---|---|---|---|---|
+| `ruta_id` | `query` | No | `number` | ID de la ruta para filtrar los viajes | 1 |
+
 **Responses**:
 
 - **Status `200`**: Lista de todos los viajes a partir de la fecha y hora actual.
@@ -487,3 +493,8 @@ The API supports the following security schemes:
 | `duracion` | `number` | Yes | Duración del viaje en minutos | 120 |
 | `capacidad` | `number` | Yes | Capacidad total del viaje (número de asientos) | 40 |
 
+### ViajesDisponiblesQueryDto
+
+| Field | Type | Required | Description | Example |
+|---|---|---|---|---|
+| `ruta_id` | `number` | No | ID de la ruta para filtrar los viajes | 1 |

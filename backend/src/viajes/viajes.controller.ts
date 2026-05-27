@@ -22,6 +22,7 @@ import { ViajesService } from '@/viajes/viajes.service';
 import { CreateViajeDto } from '@/viajes/dto/create-viaje.dto';
 import { BuscarViajesQueryDto } from '@/viajes/dto/buscar-viajes-query.dto';
 import { ViajeConDisponibilidadDto } from '@/viajes/dto/viaje-con-disponibilidad.dto';
+import { ViajesDisponiblesQueryDto } from '@/viajes/dto/viajes-disponibles-query.dto';
 import { ApiKeyGuard } from '@/auth/guards/api-key.guard';
 
 @ApiTags('Viajes')
@@ -51,8 +52,8 @@ export class ViajesController {
       'Lista de todos los viajes a partir de la fecha y hora actual.',
     type: [ViajeConDisponibilidadDto],
   })
-  obtenerDisponibles() {
-    return this.viajesService.obtenerDisponibles();
+  obtenerDisponibles(@Query() query: ViajesDisponiblesQueryDto) {
+    return this.viajesService.obtenerDisponibles(query);
   }
 
   @Get(':id/boletos')
