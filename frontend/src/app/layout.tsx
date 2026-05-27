@@ -19,18 +19,23 @@ export const metadata: Metadata = {
 };
 
 import Navbar from "./_components/Navbar";
+import { cookies } from "next/headers";
+import { TOKEN_NAME } from "@/constants";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const token = (await cookies()).get(TOKEN_NAME)?.value;
+  const isAuthenticated = !!token;
+
   return (
     <html lang="en" data-theme="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
+        <Navbar isAuthenticated={isAuthenticated} />
         {children}
       </body>
     </html>

@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Navbar() {
+import { logoutAction } from "@/actions/auth/logout";
+
+export default function Navbar({ isAuthenticated = false }: { isAuthenticated?: boolean }) {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
@@ -47,12 +49,30 @@ export default function Navbar() {
         </ul>
       </div>
       <div className="navbar-end gap-2">
-        <Link href="/login" className="btn btn-sm btn-outline">
-          Ingresar
-        </Link>
-        <Link href="/register" className="btn btn-sm btn-primary">
-          Registrarse
-        </Link>
+        {!isAuthenticated ? (
+          <>
+            <Link href="/login" className="btn btn-sm btn-outline">
+              Ingresar
+            </Link>
+            <Link href="/register" className="btn btn-sm btn-primary">
+              Registrarse
+            </Link>
+          </>
+        ) : (
+          <div className="flex items-center gap-4">
+            <div className="avatar placeholder" title="Mi Cuenta">
+              <div className="bg-primary text-primary-content rounded-full w-8 cursor-pointer shadow-sm">
+                <span className="text-xs">USR</span>
+              </div>
+            </div>
+            <button 
+              onClick={() => logoutAction()}
+              className="btn btn-sm btn-ghost text-error hover:bg-error/10"
+            >
+              Salir
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
