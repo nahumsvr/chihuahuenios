@@ -1,7 +1,7 @@
 import { API_URL } from "@/constants";
 import { RutaResumen, ViajeConDisponibilidad } from "@/entities";
-import SearchForm from "./_components/SearchForm";
-import ViajeCard from "./_components/ViajeCard";
+import SearchForm from "@/app/_components/SearchForm";
+import ViajeCard from "@/app/_components/ViajeCard";
 
 export default async function Home({
   searchParams,
@@ -12,7 +12,6 @@ export default async function Home({
   const destino = searchParams.destino as string | undefined;
   const fecha = searchParams.fecha as string | undefined;
 
-  // Fetch todas las rutas para poblar el formulario de búsqueda
   let rutas: RutaResumen[] = [];
   try {
     const resRutas = await fetch(`${API_URL}/api/rutas`, {
@@ -25,13 +24,12 @@ export default async function Home({
     console.error("Error fetching rutas", error);
   }
 
-  // Fetch viajes si existen los parámetros de búsqueda
   let viajes: ViajeConDisponibilidad[] = [];
   if (origen && destino && fecha) {
     try {
       const queryParams = new URLSearchParams({ origen, destino, fecha });
       const resViajes = await fetch(`${API_URL}/api/viajes?${queryParams.toString()}`, {
-        cache: 'no-store' // Para resultados de búsqueda frescos
+        cache: 'no-store'
       });
       if (resViajes.ok) {
         viajes = await resViajes.json();
@@ -44,23 +42,19 @@ export default async function Home({
   return (
     <main className="min-h-screen bg-base-200 py-12 px-4 sm:px-6 lg:px-8 font-[family-name:var(--font-geist-sans)]">
       <div className="max-w-5xl mx-auto space-y-10">
-        
-        {/* Header Hero Section */}
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-black text-primary drop-shadow-md">
             Explorador de Rutas y Horarios
           </h1>
           <p className="text-lg text-base-content/80 max-w-2xl mx-auto">
-            Encuentra y reserva tus boletos de autobús al instante. Selecciona tu origen, destino y fecha para descubrir nuestros próximos viajes.
+            Encuentra y reserva tus boletos de autobús al instante.
           </p>
         </div>
 
-        {/* Search Form Section */}
         <section className="relative z-10 -mx-4 sm:mx-0">
           <SearchForm rutas={rutas} />
         </section>
 
-        {/* Results Section */}
         <section className="space-y-6">
           {origen && destino && fecha && (
             <div className="mb-4">
@@ -83,7 +77,7 @@ export default async function Home({
                 <div className="text-5xl mb-4">🚷</div>
                 <h3 className="text-xl font-semibold text-base-content mb-2">No se encontraron viajes</h3>
                 <p className="text-base-content/70">
-                  Lo sentimos, no hay salidas programadas para la ruta y fecha seleccionada. Por favor, intenta con otra búsqueda.
+                  Intenta con otra búsqueda.
                 </p>
               </div>
             )
@@ -94,7 +88,7 @@ export default async function Home({
               <div className="text-5xl mb-4">🚌</div>
               <h3 className="text-xl font-semibold text-base-content mb-2">Comienza tu Búsqueda</h3>
               <p className="text-base-content/70 max-w-md mx-auto">
-                Selecciona tus criterios de viaje en el formulario de arriba para ver los horarios y disponibilidad de asientos.
+                Selecciona tus criterios de viaje en el formulario de arriba.
               </p>
             </div>
           )}
