@@ -28,3 +28,11 @@ export interface ViajeConDisponibilidad {
   asientos_disponibles: number;
   total_asientos: number;
 }
+
+export interface Boleto {
+  id: number;
+  viaje_id: number;
+  numero_asiento: number;
+  estado: 'disponible' | 'reservado' | 'pagado';
+  bloqueado_hasta?: string | null;
+}
