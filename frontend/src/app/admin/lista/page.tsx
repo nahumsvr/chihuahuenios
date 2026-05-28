@@ -1,5 +1,5 @@
 import { API_URL } from "@/constants";
-import AdminViajesList from "../_components/AdminViajesList";
+import AdminViajesList from "../viajes/_components/AdminViajesList";
 import { RutaResumen } from "@/entities";
 
 async function getRutas(): Promise<RutaResumen[]> {
@@ -16,12 +16,14 @@ export default async function AdminViajesListaPage() {
   const rutas = await getRutas();
 
   return (
-    <main className="min-h-screen bg-[#07070a] py-12 px-4">
+    <main className="bg-base-200 px-4 py-12 min-h-screen">
       {/* Glow */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 h-[300px] w-[600px] rounded-full bg-warning/5 blur-[120px] pointer-events-none" />
-      
-      <div className="max-w-5xl mx-auto relative z-10">
-        <h1 className="text-3xl font-black text-white mb-6 text-center">Gestión de Viajes</h1>
+      <div className="top-0 left-1/2 fixed bg-warning/5 blur-[120px] rounded-full w-[600px] h-[300px] -translate-x-1/2 pointer-events-none" />
+
+      <div className="z-10 relative mx-auto max-w-5xl">
+        <h1 className="mb-6 font-black text-3xl text-center">
+          Gestión de Viajes
+        </h1>
         <AdminViajesList rutas={rutas} />
       </div>
     </main>

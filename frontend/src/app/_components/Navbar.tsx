@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { UserRole } from "@/entities";
 import { logoutAction } from "@/actions/auth/logout";
 
+import ThemeToggle from "./ThemeToggle";
+
 export default function Navbar({
   isAuthenticated = false,
   rol = null,
@@ -33,8 +35,8 @@ export default function Navbar({
         .substring(0, 2)
         .toUpperCase()
     : rol === "admin"
-    ? "ADM"
-    : "USR";
+      ? "ADM"
+      : "USR";
 
   return (
     <div className="top-0 z-50 sticky bg-base-100 shadow-md border-base-200 border-b navbar">
@@ -69,7 +71,7 @@ export default function Navbar({
                   <Link href="/admin/viajes">Crear Viaje</Link>
                 </li>
                 <li>
-                  <Link href="/admin/viajes/lista">Lista de Viajes</Link>
+                  <Link href="/admin/lista">Lista de Viajes</Link>
                 </li>
               </>
             ) : (
@@ -98,7 +100,7 @@ export default function Navbar({
         >
           <span>🚌</span> Chihuahueños
           {rol === "admin" && (
-            <span className="badge badge-warning badge-sm font-semibold">
+            <span className="font-semibold badge badge-warning badge-sm">
               Admin
             </span>
           )}
@@ -112,14 +114,6 @@ export default function Navbar({
             <>
               <li>
                 <Link
-                  href="/admin/rutas"
-                  className={`btn btn-sm ${isActive("/admin/rutas")}`}
-                >
-                  Crear Ruta
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/admin/viajes"
                   className={`btn btn-sm ${isActive("/admin/viajes")}`}
                 >
@@ -128,10 +122,18 @@ export default function Navbar({
               </li>
               <li>
                 <Link
-                  href="/admin/viajes/lista"
-                  className={`btn btn-sm ${isActive("/admin/viajes/lista")}`}
+                  href="/admin/lista"
+                  className={`btn btn-sm ${isActive("/admin/lista")}`}
                 >
                   Ver Viajes
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/admin/rutas"
+                  className={`btn btn-sm ${isActive("/admin/rutas")}`}
+                >
+                  Crear Ruta
                 </Link>
               </li>
             </>
@@ -175,6 +177,8 @@ export default function Navbar({
 
       {/* Derecha: auth */}
       <div className="gap-2 navbar-end">
+        <ThemeToggle />
+
         {!isAuthenticated ? (
           <>
             <Link href="/login" className="btn-outline btn btn-sm">
@@ -186,10 +190,7 @@ export default function Navbar({
           </>
         ) : (
           <div className="flex items-center gap-4">
-            <div
-              className="dropdown dropdown-end"
-              title={nombre ?? undefined}
-            >
+            <div className="dropdown dropdown-end" title={nombre ?? undefined}>
               <div
                 tabIndex={0}
                 role="button"
@@ -210,7 +211,7 @@ export default function Navbar({
                 className="z-[1] bg-base-100 shadow mt-3 p-2 rounded-box w-52 menu menu-sm dropdown-content"
               >
                 {nombre && (
-                  <li className="menu-title px-4 py-2 text-xs text-base-content/60">
+                  <li className="px-4 py-2 text-xs text-base-content/60 menu-title">
                     {nombre}
                   </li>
                 )}
@@ -220,10 +221,7 @@ export default function Navbar({
                   </li>
                 )}
                 <li>
-                  <button
-                    onClick={() => logoutAction()}
-                    className="text-error"
-                  >
+                  <button onClick={() => logoutAction()} className="text-error">
                     Cerrar Sesión
                   </button>
                 </li>

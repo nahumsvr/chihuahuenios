@@ -53,17 +53,17 @@ export default function AdminViajesList({ rutas }: { rutas: RutaResumen[] }) {
   };
 
   return (
-    <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-2xl mt-8">
+    <div className="bg-base-100/60 backdrop-blur-xl border border-base-content/5 rounded-2xl p-6 shadow-2xl mt-8">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-        <h2 className="text-xl font-bold text-white">Viajes Programados</h2>
+        <h2 className="text-xl font-bold text-base-content">Viajes Programados</h2>
         
         {/* Filtro por ruta */}
         <div className="relative w-full sm:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-base-content/50" />
           <select
             value={rutaIdFilter}
             onChange={(e) => setRutaIdFilter(e.target.value)}
-            className="select select-bordered select-sm w-full pl-9 bg-white/[0.03] border-white/10 text-white focus:border-warning"
+            className="select select-bordered select-sm w-full pl-9 bg-base-100/50 border-base-content/10 text-base-content focus:border-warning"
           >
             <option value="">Todas las rutas</option>
             {rutas.map((r) => (
@@ -87,13 +87,13 @@ export default function AdminViajesList({ rutas }: { rutas: RutaResumen[] }) {
           <span className="loading loading-spinner loading-lg text-warning"></span>
         </div>
       ) : viajes.length === 0 ? (
-        <div className="text-center py-10 text-gray-400">
+        <div className="text-center py-10 text-base-content/60">
           No se encontraron viajes.
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="table table-zebra w-full text-left text-sm text-gray-300">
-            <thead className="text-gray-400 uppercase bg-white/5">
+          <table className="table table-zebra w-full text-left text-sm text-base-content/80">
+            <thead className="text-base-content/60 uppercase bg-base-content/5">
               <tr>
                 <th className="py-3 px-4 font-semibold">ID</th>
                 <th className="py-3 px-4 font-semibold">Ruta</th>
@@ -104,20 +104,20 @@ export default function AdminViajesList({ rutas }: { rutas: RutaResumen[] }) {
             </thead>
             <tbody>
               {viajes.map((v) => (
-                <tr key={v.id} className="border-b border-white/5">
+                <tr key={v.id} className="border-b border-base-content/5">
                   <td className="py-3 px-4 font-mono">#{v.id}</td>
-                  <td className="py-3 px-4 font-medium text-white">
+                  <td className="py-3 px-4 font-medium text-base-content">
                     {v.ruta.origen} → {v.ruta.destino}
                   </td>
                   <td className="py-3 px-4">{formatFecha(v.fecha_hora_salida)}</td>
                   <td className="py-3 px-4 text-center">
-                    <span className="badge badge-sm badge-outline border-white/20 text-gray-300">
+                    <span className="badge badge-sm badge-outline border-base-content/20 text-base-content/80">
                       {v.asientos_disponibles}/{v.total_asientos} libres
                     </span>
                   </td>
                   <td className="py-3 px-4 text-center">
                     {v.has_sold_boletos ? (
-                      <span className="text-xs text-gray-500 italic" title="No se puede eliminar porque ya tiene boletos vendidos">
+                      <span className="text-xs text-base-content/50 italic" title="No se puede eliminar porque ya tiene boletos vendidos">
                         Con ventas
                       </span>
                     ) : (

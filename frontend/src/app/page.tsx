@@ -30,14 +30,14 @@ export default async function Home({
   // Vista para el Administrador
   if (rol === "admin") {
     return (
-      <main className="min-h-screen bg-[#07070a] py-20 px-4 flex items-center justify-center font-[family-name:var(--font-geist-sans)]">
+      <main className="min-h-screen bg-base-200 py-20 px-4 flex items-center justify-center">
         <div className="fixed top-0 left-1/2 -translate-x-1/2 h-[300px] w-[600px] rounded-full bg-warning/5 blur-[120px] pointer-events-none" />
-        <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-10 shadow-2xl max-w-lg w-full text-center space-y-6">
+        <div className="bg-base-100/60 backdrop-blur-xl border border-base-content/5 rounded-2xl p-10 shadow-2xl max-w-lg w-full text-center space-y-6 relative z-10">
           <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-warning/10 mx-auto">
             <ShieldCheck className="h-10 w-10 text-warning" />
           </div>
-          <h1 className="text-3xl font-black text-white">Modo Administrador</h1>
-          <p className="text-gray-400">
+          <h1 className="text-3xl font-black text-base-content">Modo Administrador</h1>
+          <p className="text-base-content/70">
             Has iniciado sesión como administrador. Selecciona una opción del menú de navegación en la parte superior para comenzar a gestionar rutas y viajes.
           </p>
         </div>
@@ -77,7 +77,7 @@ export default async function Home({
   }
 
   return (
-    <main className="min-h-screen bg-base-200 py-12 px-4 sm:px-6 lg:px-8 font-[family-name:var(--font-geist-sans)]">
+    <main className="min-h-screen bg-base-200 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-10">
         <div className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-black text-primary drop-shadow-md">

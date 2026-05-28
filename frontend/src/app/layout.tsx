@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Outfit } from "next/font/google";
 import "./globals.css";
+import { Providers } from "./providers";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  weight: ["300", "400", "500", "600", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -51,12 +47,12 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="es" data-theme="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Navbar isAuthenticated={isAuthenticated} rol={rol} nombre={nombre} />
-        {children}
+    <html lang="es" suppressHydrationWarning>
+      <body className={`${outfit.variable} font-sans antialiased text-base-content bg-base-100 transition-colors duration-300`}>
+        <Providers>
+          <Navbar isAuthenticated={isAuthenticated} rol={rol} nombre={nombre} />
+          {children}
+        </Providers>
       </body>
     </html>
   );

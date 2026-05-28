@@ -28,21 +28,21 @@ function CompraCard({ compra }: { compra: CompraResumen }) {
   };
 
   return (
-    <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-6 shadow-lg">
+    <div className="bg-base-100/60 backdrop-blur-xl border border-base-content/5 rounded-2xl p-6 shadow-lg">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">
+          <p className="text-base-content/60 text-xs font-semibold uppercase tracking-wider mb-1">
             {formatFecha(compra.viaje.fecha_hora_salida)}
           </p>
-          <h2 className="text-white text-xl font-black">
+          <h2 className="text-base-content text-xl font-black">
             {compra.viaje.ruta.origen}{" "}
-            <span className="text-gray-500">→</span>{" "}
+            <span className="text-base-content/50">→</span>{" "}
             {compra.viaje.ruta.destino}
           </h2>
         </div>
         <div className="text-right shrink-0 ml-4">
-          <p className="text-gray-400 text-xs">Asiento</p>
+          <p className="text-base-content/60 text-xs">Asiento</p>
           <p className="text-primary text-2xl font-black">
             {compra.numero_asiento}
           </p>
@@ -51,32 +51,32 @@ function CompraCard({ compra }: { compra: CompraResumen }) {
 
       {/* Detalles */}
       <div className="grid grid-cols-3 gap-3 mb-5">
-        <div className="bg-white/[0.03] rounded-lg p-3 text-center">
-          <p className="text-gray-500 text-xs mb-1">Precio</p>
-          <p className="text-white text-sm font-bold">
+        <div className="bg-base-content/5 rounded-lg p-3 text-center">
+          <p className="text-base-content/60 text-xs mb-1">Precio</p>
+          <p className="text-base-content text-sm font-bold">
             ${Number(compra.precio).toFixed(2)}
           </p>
         </div>
-        <div className="bg-white/[0.03] rounded-lg p-3 text-center">
-          <p className="text-gray-500 text-xs mb-1">Duración</p>
-          <p className="text-white text-sm font-bold">
+        <div className="bg-base-content/5 rounded-lg p-3 text-center">
+          <p className="text-base-content/60 text-xs mb-1">Duración</p>
+          <p className="text-base-content text-sm font-bold">
             {Math.floor(compra.viaje.duracion / 60)}h{" "}
             {compra.viaje.duracion % 60}min
           </p>
         </div>
-        <div className="bg-white/[0.03] rounded-lg p-3 text-center">
-          <p className="text-gray-500 text-xs mb-1">Viaje ID</p>
-          <p className="text-white text-sm font-bold">#{compra.viaje.id}</p>
+        <div className="bg-base-content/5 rounded-lg p-3 text-center">
+          <p className="text-base-content/60 text-xs mb-1">Viaje ID</p>
+          <p className="text-base-content text-sm font-bold">#{compra.viaje.id}</p>
         </div>
       </div>
 
       {/* Código + botón descarga */}
-      <div className="border-t border-white/5 pt-4">
+      <div className="border-t border-base-content/5 pt-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 min-w-0">
             <Ticket className="h-4 w-4 text-primary shrink-0" />
             <p
-              className="font-mono text-xs text-gray-400 truncate"
+              className="font-mono text-xs text-base-content/60 truncate"
               title={compra.codigo_boleto}
             >
               {compra.codigo_boleto}
@@ -93,7 +93,7 @@ export default async function MisComprasPage() {
   const compras = await getMisComprasAction();
 
   return (
-    <main className="min-h-screen bg-[#07070a] py-12 px-4 font-[family-name:var(--font-geist-sans)]">
+    <main className="min-h-screen bg-base-200 py-12 px-4">
       {/* Glow */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 h-[300px] w-[600px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
@@ -104,8 +104,8 @@ export default async function MisComprasPage() {
             <ShoppingBag className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-white">Mis Compras</h1>
-            <p className="text-sm text-gray-400">
+            <h1 className="text-2xl font-black text-base-content">Mis Compras</h1>
+            <p className="text-sm text-base-content/70">
               {compras.length === 0
                 ? "No tienes boletos aún"
                 : `${compras.length} boleto${compras.length !== 1 ? "s" : ""}`}
@@ -115,12 +115,12 @@ export default async function MisComprasPage() {
 
         {/* Lista de compras */}
         {compras.length === 0 ? (
-          <div className="text-center py-20 bg-black/30 rounded-2xl border border-white/5">
+          <div className="text-center py-20 bg-base-100/50 rounded-2xl border border-base-content/5">
             <div className="text-6xl mb-4">🎫</div>
-            <h2 className="text-white text-xl font-bold mb-2">
+            <h2 className="text-base-content text-xl font-bold mb-2">
               Sin compras todavía
             </h2>
-            <p className="text-gray-400 text-sm mb-6">
+            <p className="text-base-content/60 text-sm mb-6">
               Cuando compres un boleto, aparecerá aquí.
             </p>
             <a href="/" className="btn btn-primary btn-sm">

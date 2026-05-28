@@ -44,21 +44,21 @@ function LoginForm() {
   const [state, formAction] = useFormState(loginAction, null);
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#07070a] px-4 py-12">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-base-200 px-4 py-12">
       {/* Círculos decorativos de gradiente (Glow effects) */}
       <div className="absolute top-1/4 left-1/4 h-[350px] w-[350px] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 h-[300px] w-[300px] rounded-full bg-secondary/5 blur-[100px] pointer-events-none" />
 
-      <div className="card w-full max-w-md bg-black/40 backdrop-blur-xl border border-white/5 shadow-2xl p-6">
+      <div className="card w-full max-w-md bg-base-100/60 backdrop-blur-xl border border-base-content/5 shadow-2xl p-6 z-10">
         <div className="card-body p-2 flex flex-col gap-6">
           <div className="flex flex-col items-center gap-1 text-center">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 mb-2">
               <Lock className="h-6 w-6 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-base-content">
               Chihuahueños
             </h1>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-base-content/70">
               Inicia sesión para continuar con tu compra
             </p>
           </div>
@@ -85,17 +85,17 @@ function LoginForm() {
             <input type="hidden" name="redirectPath" value={redirectPath} />
             <div className="form-control w-full">
               <label className="label py-1" htmlFor="email">
-                <span className="label-text font-medium text-gray-300">
+                <span className="label-text font-medium text-base-content/80">
                   Correo electrónico
                 </span>
               </label>
-              <label className="input input-bordered flex items-center gap-3 bg-white/[0.03] border-white/10 focus-within:border-primary focus-within:outline-none transition">
-                <Mail className="h-4 w-4 text-gray-400 pointer-events-none" />
+              <label className="input input-bordered flex items-center gap-3 bg-base-100/50 border-base-content/10 focus-within:border-primary focus-within:outline-none transition">
+                <Mail className="h-4 w-4 text-base-content/50 pointer-events-none" />
                 <input
                   type="email"
                   name="email"
                   id="email"
-                  className="grow text-white bg-transparent placeholder-gray-500"
+                  className="grow text-base-content bg-transparent placeholder-base-content/40"
                   placeholder="correo@ejemplo.com"
                   required
                   autoComplete="username"
@@ -105,23 +105,23 @@ function LoginForm() {
 
             <div className="form-control w-full">
               <label className="label py-1" htmlFor="password">
-                <span className="label-text font-medium text-gray-300">
+                <span className="label-text font-medium text-base-content/80">
                   Contraseña
                 </span>
               </label>
-              <label className="input input-bordered flex items-center gap-3 bg-white/[0.03] border-white/10 focus-within:border-primary focus-within:outline-none transition">
-                <Lock className="h-4 w-4 text-gray-400 pointer-events-none" />
+              <label className="input input-bordered flex items-center gap-3 bg-base-100/50 border-base-content/10 focus-within:border-primary focus-within:outline-none transition">
+                <Lock className="h-4 w-4 text-base-content/50 pointer-events-none" />
                 <input
                   type={isVisible ? "text" : "password"}
                   name="password"
                   id="password"
-                  className="grow text-white bg-transparent placeholder-gray-500"
+                  className="grow text-base-content bg-transparent placeholder-base-content/40"
                   placeholder="••••••••"
                   required
                   autoComplete="current-password"
                 />
                 <button
-                  className="focus:outline-none hover:text-white transition text-gray-400"
+                  className="focus:outline-none hover:text-primary transition text-base-content/50"
                   type="button"
                   onClick={toggleVisibility}
                   aria-label="Toggle password visibility"
@@ -139,7 +139,7 @@ function LoginForm() {
           </form>
 
           <div className="text-center text-sm mt-4">
-            <span className="text-gray-400">¿No tienes una cuenta? </span>
+            <span className="text-base-content/70">¿No tienes una cuenta? </span>
             <Link
               href={
                 redirectPath !== "/"
@@ -161,7 +161,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-[#07070a] text-white">
+        <div className="flex min-h-screen items-center justify-center bg-base-200">
           <div className="loading loading-spinner loading-lg text-primary" />
         </div>
       }
