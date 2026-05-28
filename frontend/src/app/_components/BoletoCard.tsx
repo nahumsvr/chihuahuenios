@@ -52,8 +52,13 @@ export function BoletoCard({
   return (
     <div
       ref={printRef}
-      className="bg-white text-gray-900 rounded-2xl overflow-hidden shadow-2xl w-full max-w-md"
-      style={{ fontFamily: "Arial, sans-serif" }}
+      className="rounded-2xl overflow-hidden w-full max-w-md"
+      style={{ 
+        fontFamily: "Arial, sans-serif",
+        backgroundColor: "#ffffff",
+        color: "#111827",
+        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+      }}
     >
       {/* Header del boleto */}
       <div
@@ -62,18 +67,18 @@ export function BoletoCard({
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-white/70 text-xs font-semibold uppercase tracking-widest">
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255, 255, 255, 0.7)" }}>
               🚌 Chihuahueños
             </p>
-            <p className="text-white text-xl font-black mt-1">
+            <p className="text-xl font-black mt-1" style={{ color: "#ffffff" }}>
               {viaje.ruta.origen}{" "}
               <span style={{ color: "rgba(255,255,255,0.6)" }}>→</span>{" "}
               {viaje.ruta.destino}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-white/70 text-xs">Asiento</p>
-            <p className="text-white text-3xl font-black">{numero_asiento}</p>
+            <p className="text-xs" style={{ color: "rgba(255, 255, 255, 0.7)" }}>Asiento</p>
+            <p className="text-3xl font-black" style={{ color: "#ffffff" }}>{numero_asiento}</p>
           </div>
         </div>
       </div>
@@ -111,34 +116,34 @@ export function BoletoCard({
 
         <div className="px-6 py-5 grid grid-cols-2 gap-4">
           <div>
-            <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold">
+            <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: "#9ca3af" }}>
               Salida
             </p>
-            <p className="text-gray-900 text-sm font-bold mt-1">
+            <p className="text-sm font-bold mt-1" style={{ color: "#111827" }}>
               {formatFecha(viaje.fecha_hora_salida)}
             </p>
           </div>
           <div>
-            <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold">
+            <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: "#9ca3af" }}>
               Llegada estimada
             </p>
-            <p className="text-gray-900 text-sm font-bold mt-1">
+            <p className="text-sm font-bold mt-1" style={{ color: "#111827" }}>
               {formatFecha(viaje.fecha_hora_llegada)}
             </p>
           </div>
           <div>
-            <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold">
+            <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: "#9ca3af" }}>
               Duración
             </p>
-            <p className="text-gray-900 text-sm font-bold mt-1">
+            <p className="text-sm font-bold mt-1" style={{ color: "#111827" }}>
               {formatDuracion(viaje.duracion)}
             </p>
           </div>
           <div>
-            <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold">
+            <p className="text-xs uppercase tracking-wider font-semibold" style={{ color: "#9ca3af" }}>
               Precio
             </p>
-            <p className="text-gray-900 text-sm font-bold mt-1">
+            <p className="text-sm font-bold mt-1" style={{ color: "#111827" }}>
               ${Number(precio).toFixed(2)} MXN
             </p>
           </div>
@@ -154,21 +159,22 @@ export function BoletoCard({
         }}
       >
         <QRCodeSVG
-          value={codigo_boleto}
+          value={codigo_boleto || ""}
           size={72}
           bgColor="#f9fafb"
           fgColor="#1e1b4b"
           level="M"
         />
         <div className="flex-1 min-w-0">
-          <p className="text-gray-400 text-xs uppercase tracking-wider font-semibold mb-1">
+          <p className="text-xs uppercase tracking-wider font-semibold mb-1" style={{ color: "#9ca3af" }}>
             Código de boleto
           </p>
           <p
-            className="font-mono text-xs text-gray-700 break-all"
-            title={codigo_boleto}
+            className="font-mono text-xs break-all"
+            style={{ color: "#374151" }}
+            title={codigo_boleto || ""}
           >
-            {codigo_boleto}
+            {codigo_boleto || "Sin código"}
           </p>
         </div>
       </div>
@@ -187,31 +193,53 @@ export function DescargarBoleto({ boleto }: { boleto: BoletoData }) {
 
     // Import dinámico para no aumentar el bundle inicial
     const { default: jsPDF } = await import("jspdf");
-    const { default: html2canvas } = await import("html2canvas");
+    const { toPng } = await import("html-to-image");
 
-    const canvas = await html2canvas(printRef.current, {
-      scale: 2,
+    const el = printRef.current;
+    const width = el.scrollWidth;
+    const height = el.scrollHeight;
+
+    const imgData = await toPng(el, {
+      pixelRatio: 2,
       backgroundColor: "#ffffff",
-      useCORS: true,
+      width: width,
+      height: height,
+      style: {
+        transform: 'scale(1)',
+        transformOrigin: 'top left'
+      }
     });
 
-    const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({
       orientation: "portrait",
-      unit: "px",
-      format: [canvas.width / 2, canvas.height / 2],
+      unit: "mm",
+      format: "a4",
     });
 
-    pdf.addImage(imgData, "PNG", 0, 0, canvas.width / 2, canvas.height / 2);
+    // A4 size in mm is 210 x 297
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    
+    // Set a fixed width for the ticket in the PDF (e.g., 120mm)
+    const imgWidth = 120;
+    const ratio = height / width;
+    const imgHeight = imgWidth * ratio;
+    
+    // Center the ticket horizontally
+    const x = (pdfWidth - imgWidth) / 2;
+    const y = 20;
+
+    pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
     pdf.save(
-      `boleto-${boleto.viaje.ruta.origen}-${boleto.viaje.ruta.destino}-${boleto.codigo_boleto.substring(0, 8)}.pdf`
+      `boleto-${boleto.viaje.ruta.origen}-${boleto.viaje.ruta.destino}-${(boleto.codigo_boleto || "codigo").substring(0, 8)}.pdf`
     );
   };
 
   return (
     <div className="flex flex-col items-center gap-4">
-      {/* Boleto visual (oculto para captura, visible para preview) */}
-      <BoletoCard boleto={boleto} printRef={printRef} />
+      {/* Boleto visual (oculto en la interfaz, pero renderizado para la captura) */}
+      <div style={{ position: "absolute", top: "-9999px", left: "-9999px" }}>
+        <BoletoCard boleto={boleto} printRef={printRef} />
+      </div>
       <button
         onClick={handleDescargar}
         className="btn btn-primary btn-sm gap-2"
