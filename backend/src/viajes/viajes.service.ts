@@ -30,8 +30,9 @@ export class ViajesService {
   ): Promise<ViajeConDisponibilidadDto[]> {
     const { origen, destino, fecha } = query;
 
-    const fechaInicio = `${fecha}T00:00:00`;
-    const fechaFin = `${fecha}T23:59:59`;
+    // Se asume la zona horaria local de México (UTC-6) para los viajes
+    const fechaInicio = new Date(`${fecha}T00:00:00-06:00`);
+    const fechaFin = new Date(`${fecha}T23:59:59-06:00`);
 
     const viajes = await this.viajeRepository
       .createQueryBuilder('viaje')
