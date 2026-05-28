@@ -2,6 +2,7 @@
 
 import { API_URL, TOKEN_NAME } from "@/constants";
 import { cookies } from "next/headers";
+import { revalidateTag } from "next/cache";
 
 export async function createRutaAction(prevState: unknown, formData: FormData) {
   const origen = formData.get("origen")?.toString().trim();
@@ -32,6 +33,8 @@ export async function createRutaAction(prevState: unknown, formData: FormData) {
     if (!response.ok) {
       return { error: data.message || "Error al crear la ruta" };
     }
+
+    revalidateTag("rutas");
 
     return { success: true, ruta: data };
   } catch (err: unknown) {

@@ -2,7 +2,7 @@
 
 import { API_URL, TOKEN_NAME } from "@/constants";
 import { cookies } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function deleteViajeAction(id: number) {
   const token = (await cookies()).get(TOKEN_NAME)?.value;
@@ -30,6 +30,7 @@ export async function deleteViajeAction(id: number) {
       return { error: message };
     }
 
+    revalidateTag("viajes");
     revalidatePath("/admin/viajes");
     return { success: true };
   } catch (err: unknown) {

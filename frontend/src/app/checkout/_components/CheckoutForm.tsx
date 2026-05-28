@@ -64,6 +64,11 @@ export default function CheckoutForm({ token }: { token: string }) {
 
     // Agregar token oculto que viene de la URL
     formData.append("token", token);
+    
+    // Pasar viajeId para revalidar
+    if (resumen?.viajeId) {
+      formData.append("viajeId", String(resumen.viajeId));
+    }
 
     setLoading(true);
     setErrorMsg(null);

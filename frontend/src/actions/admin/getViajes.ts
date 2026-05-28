@@ -17,7 +17,7 @@ export async function getViajesAdminAction(
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      cache: "no-store",
+      next: { tags: ["viajes"] },
     });
 
     if (!response.ok) return [];

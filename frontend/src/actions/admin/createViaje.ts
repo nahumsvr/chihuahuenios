@@ -2,6 +2,7 @@
 
 import { API_URL, TOKEN_NAME } from "@/constants";
 import { cookies } from "next/headers";
+import { revalidateTag } from "next/cache";
 
 export async function createViajeAction(
   prevState: unknown,
@@ -46,6 +47,8 @@ export async function createViajeAction(
     if (!response.ok) {
       return { error: data.message || "Error al crear el viaje" };
     }
+
+    revalidateTag("viajes");
 
     return { success: true, viaje: data };
   } catch (err: unknown) {

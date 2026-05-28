@@ -66,7 +66,7 @@ export default async function Home({
     try {
       const queryParams = new URLSearchParams({ origen, destino, fecha });
       const resViajes = await fetch(`${API_URL}/api/viajes?${queryParams.toString()}`, {
-        cache: 'no-store'
+        next: { tags: ['viajes'] }
       });
       if (resViajes.ok) {
         viajes = await resViajes.json();

@@ -14,7 +14,7 @@ export default async function ViajePage({
   let boletos: Boleto[] = [];
   try {
     const res = await fetch(`${API_URL}/api/viajes/${id}/boletos`, {
-      cache: "no-store",
+      next: { tags: [`viaje-${id}`] },
     });
     if (res.ok) {
       boletos = await res.json();

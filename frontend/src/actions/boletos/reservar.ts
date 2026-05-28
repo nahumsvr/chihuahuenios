@@ -2,8 +2,9 @@
 
 import { API_URL } from "../../constants";
 import { AuthHeaders } from "../../helpers/authHeaders";
+import { revalidateTag } from "next/cache";
 
-export async function reservarBoletoAction(boletoId: number) {
+export async function reservarBoletoAction(boletoId: number, viajeId: string) {
   try {
     const headers = await AuthHeaders();
     
@@ -30,6 +31,7 @@ export async function reservarBoletoAction(boletoId: number) {
       return { error: data.message || "Error al reservar el asiento", status: response.status };
     }
 
+    revalidateTag(`viaje-${viajeId}`);
     return { success: true, reserva_token: data.reserva_token };
   } catch (error) {
     console.error("Error en reservarBoletoAction:", error);

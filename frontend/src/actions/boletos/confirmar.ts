@@ -2,11 +2,13 @@
 
 import { API_URL } from "../../constants";
 import { AuthHeaders } from "../../helpers/authHeaders";
+import { revalidateTag } from "next/cache";
 
 export async function confirmarCompraAction(prevState: unknown, formData: FormData) {
   try {
     const nombre = formData.get("nombre") as string;
     const token = formData.get("token") as string;
+    const viajeId = formData.get("viajeId") as string;
     if (!nombre || !token) {
       return { error: "Faltan datos requeridos (nombre o token)." };
     }
@@ -29,6 +31,11 @@ export async function confirmarCompraAction(prevState: unknown, formData: FormDa
         return { error: "No autorizado. Inicia sesión nuevamente.", status: 401 };
       }
       return { error: data?.message || "Ocurrió un error al confirmar la compra." };
+    }
+
+    revalidateTag("mis-compras");
+    if (viajeId) {
+      revalidateTag(`viaje-${viajeId}`);
     }
 
     return {

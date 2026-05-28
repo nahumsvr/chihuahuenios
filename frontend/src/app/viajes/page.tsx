@@ -6,7 +6,7 @@ export default async function ViajesPage() {
   let viajes: ViajeConDisponibilidad[] = [];
   try {
     const resViajes = await fetch(`${API_URL}/api/viajes/disponibles`, {
-      cache: 'no-store'
+      next: { tags: ['viajes'] }
     });
     if (resViajes.ok) {
       viajes = await resViajes.json();

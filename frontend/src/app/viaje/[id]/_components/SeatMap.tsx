@@ -44,7 +44,7 @@ export default function SeatMap({ boletos, isAuthenticated, viajeId }: SeatMapPr
     setLoading(true);
     setErrorMsg(null);
 
-    const result = await reservarBoletoAction(selectedAsientoId);
+    const result = await reservarBoletoAction(selectedAsientoId, viajeId);
 
     if (result.error) {
       setErrorMsg(result.error);
