@@ -35,10 +35,18 @@ export class CreateUserDto {
   password: string;
 
   @ApiPropertyOptional({
-    description: 'URL de la imagen de identificación cargada en checkout',
+    description: 'URL de la imagen de identificación',
     example: 'https://minio/bucket/id.jpg',
   })
   @IsUrl()
   @IsOptional()
   identificacion_url?: string;
+
+  @ApiPropertyOptional({
+    description: 'URL de la foto de perfil',
+    example: 'https://minio/bucket/perfiles/user.jpg',
+  })
+  @IsUrl()
+  @IsOptional()
+  foto_perfil_url?: string;
 }

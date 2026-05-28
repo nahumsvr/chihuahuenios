@@ -4,8 +4,9 @@ import {
   Post,
   Body,
   UseInterceptors,
-  UploadedFile,
   BadRequestException,
+  Patch,
+  UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -99,5 +100,56 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'No autorizado / Token inválido.' })
   getProfile(@CurrentUser() user: any) {
     return user;
+  }
+
+  @Auth()
+  @ApiBearerAuth()
+  @Patch('profile-picture')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+      fileFilter: (_req, file, cb) => {
+        const allowedMimes = ['image/png', 'image/jpeg', 'application/pdf'];
+        if (!allowedMimes.includes(file.mimetype)) {
+          cb(
+            new BadRequestException(
+              'Tipo de archivo no permitido. Solo se aceptan PNG y JPG.',
+            ),
+            false,
+          );
+          return;
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  @ApiOperation({ summary: 'Subir o actualizar foto de perfil' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Archivo de imagen para la foto de perfil',
+    schema: {
+      type: 'object',
+      required: ['file'],
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'Foto de perfil (PNG, JPG, max 5MB)',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Foto de perfil actualizada exitosamente. Devuelve el nuevo access_token.',
+  })
+  uploadProfilePicture(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: { sub: string },
+  ) {
+    if (!file) {
+      throw new BadRequestException('El archivo de imagen es obligatorio.');
+    }
+    return this.authService.uploadProfilePicture(user.sub, file);
   }
 }

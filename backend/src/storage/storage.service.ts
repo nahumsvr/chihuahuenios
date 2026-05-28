@@ -2,14 +2,15 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  OnModuleInit,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, PutBucketPolicyCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { extname } from 'path';
 
 @Injectable()
-export class StorageService {
+export class StorageService implements OnModuleInit {
   private readonly s3Client: S3Client;
   private readonly bucket: string;
   private readonly endpoint: string;
@@ -40,6 +41,32 @@ export class StorageService {
       },
       forcePathStyle: true, // Obligatorio para MinIO (usa path-style en vez de virtual-hosted)
     });
+  }
+
+  async onModuleInit() {
+    try {
+      const policy = {
+        Version: '2012-10-17',
+        Statement: [
+          {
+            Effect: 'Allow',
+            Principal: '*',
+            Action: ['s3:GetObject'],
+            Resource: [`arn:aws:s3:::${this.bucket}/perfiles/*`],
+          },
+        ],
+      };
+
+      await this.s3Client.send(
+        new PutBucketPolicyCommand({
+          Bucket: this.bucket,
+          Policy: JSON.stringify(policy),
+        }),
+      );
+      this.logger.log('Política de acceso público aplicada a la carpeta perfiles');
+    } catch (error) {
+      this.logger.warn('Aviso: No se pudo configurar la política pública del bucket. Si las imágenes no cargan, verifica los permisos.', error);
+    }
   }
 
   /**

@@ -18,7 +18,7 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { nombre, email, password, identificacion_url } = createUserDto;
+    const { nombre, email, password, identificacion_url, foto_perfil_url } = createUserDto;
 
     // Check if user already exists
     const existingUser = await this.userRepository.findOne({
@@ -37,6 +37,7 @@ export class UsersService {
       email,
       password_hash,
       identificacion_url,
+      foto_perfil_url,
     });
 
     return this.userRepository.save(user);
@@ -60,7 +61,7 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
-    const { nombre, email, password, identificacion_url } = updateUserDto;
+    const { nombre, email, password, identificacion_url, foto_perfil_url } = updateUserDto;
 
     if (email && email !== user.email) {
       const existingUser = await this.findOneByEmail(email);
@@ -81,6 +82,10 @@ export class UsersService {
 
     if (identificacion_url !== undefined) {
       user.identificacion_url = identificacion_url;
+    }
+
+    if (foto_perfil_url !== undefined) {
+      user.foto_perfil_url = foto_perfil_url;
     }
 
     return this.userRepository.save(user);

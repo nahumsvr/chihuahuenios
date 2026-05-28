@@ -52,6 +52,7 @@ export class AuthService {
       email: user.email,
       nombre: user.nombre,
       rol: user.rol,
+      foto_perfil_url: user.foto_perfil_url,
     };
 
     return {
@@ -62,6 +63,36 @@ export class AuthService {
         email: user.email,
         rol: user.rol,
         identificacion_url: user.identificacion_url,
+        foto_perfil_url: user.foto_perfil_url,
+      },
+    };
+  }
+
+  async uploadProfilePicture(userId: string, file: Express.Multer.File) {
+    const foto_perfil_url = await this.storageService.upload(
+      file,
+      'perfiles',
+    );
+
+    await this.usersService.update(userId, { foto_perfil_url });
+    const user = await this.usersService.findOne(userId);
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      nombre: user.nombre,
+      rol: user.rol,
+      foto_perfil_url: user.foto_perfil_url,
+    };
+
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        email: user.email,
+        rol: user.rol,
+        foto_perfil_url: user.foto_perfil_url,
       },
     };
   }

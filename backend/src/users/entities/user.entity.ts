@@ -25,6 +25,9 @@ export class User {
   @Column({ nullable: true })
   identificacion_url: string;
 
+  @Column({ nullable: true })
+  foto_perfil_url: string;
+
   @Column({
     type: 'enum',
     enum: ['usuario', 'admin'],

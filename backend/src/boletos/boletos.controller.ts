@@ -125,6 +125,6 @@ export class BoletosController {
     @Body() confirmarDto: ConfirmarBoletoDto,
     @CurrentUser() user: { sub: string },
   ) {
-    return this.boletosService.confirmar(confirmarDto, undefined, user.sub);
+    return this.boletosService.confirmar(confirmarDto, user.sub);
   }
 }

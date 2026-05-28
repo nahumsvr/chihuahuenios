@@ -40,17 +40,19 @@ export default async function RootLayout({
 
   let rol: UserRole | null = null;
   let nombre: string | null = null;
+  let foto_perfil_url: string | null = null;
   if (token) {
     const payload = decodeJwtPayload(token);
     rol = (payload?.rol as UserRole) ?? null;
     nombre = (payload?.nombre as string) ?? null;
+    foto_perfil_url = (payload?.foto_perfil_url as string) ?? null;
   }
 
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${outfit.variable} font-sans antialiased text-base-content bg-base-100 transition-colors duration-300`}>
         <Providers>
-          <Navbar isAuthenticated={isAuthenticated} rol={rol} nombre={nombre} />
+          <Navbar isAuthenticated={isAuthenticated} rol={rol} nombre={nombre} foto_perfil_url={foto_perfil_url} />
           {children}
         </Providers>
       </body>
