@@ -11,7 +11,11 @@ export async function registerAction(prevState: unknown, formData: FormData) {
   const identificacion = formData.get("identificacion") as File | null;
 
   if (!nombre || !email || !password) {
-    return { errorMsg: "Todos los campos son obligatorios" };
+    return { errorMsg: "Todos los campos de texto son obligatorios" };
+  }
+
+  if (!identificacion || identificacion.size === 0) {
+    return { errorMsg: "El documento de identidad es obligatorio para registrarse" };
   }
 
   if (password.toString().length < 6) {

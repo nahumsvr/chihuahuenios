@@ -57,10 +57,8 @@ export default function CheckoutForm({ token }: { token: string }) {
 
     const formData = new FormData(e.currentTarget);
     const nombre = formData.get("nombre");
-    const identificacion = formData.get("identificacion") as File;
-
-    if (!nombre || !identificacion || identificacion.size === 0) {
-      setErrorMsg("Debes ingresar tu nombre y subir un archivo válido.");
+    if (!nombre) {
+      setErrorMsg("Debes ingresar el nombre del pasajero.");
       return;
     }
 
@@ -139,24 +137,7 @@ export default function CheckoutForm({ token }: { token: string }) {
             />
           </div>
 
-          <div className="form-control w-full">
-            <label className="label">
-              <span className="label-text font-semibold">Identificación Oficial</span>
-              <span className="label-text-alt text-base-content/60">PDF, JPG, PNG (Max. 5MB)</span>
-            </label>
-            <input 
-              type="file" 
-              name="identificacion"
-              required
-              accept=".pdf,.jpg,.jpeg,.png"
-              className="file-input file-input-bordered file-input-primary w-full" 
-            />
-            <label className="label">
-              <span className="label-text-alt text-base-content/70">
-                Se requiere identificación vigente para abordar.
-              </span>
-            </label>
-          </div>
+
 
           <button 
             type="submit" 
@@ -169,7 +150,7 @@ export default function CheckoutForm({ token }: { token: string }) {
                 Procesando transacciones...
               </>
             ) : (
-              "Confirmar Identidad y Registrar Boleto"
+              "Confirmar y Registrar Boleto"
             )}
           </button>
         </form>

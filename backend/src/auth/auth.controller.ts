@@ -52,7 +52,7 @@ export class AuthController {
     description: 'Datos de registro con documento de identidad',
     schema: {
       type: 'object',
-      required: ['nombre', 'email', 'password'],
+      required: ['nombre', 'email', 'password', 'identificacion'],
       properties: {
         nombre: { type: 'string', example: 'Juan Pérez' },
         email: { type: 'string', example: 'juan.perez@example.com' },
@@ -74,6 +74,9 @@ export class AuthController {
     @Body() registerDto: RegisterDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
+    if (!file) {
+      throw new BadRequestException('El documento de identidad es obligatorio para registrarse.');
+    }
     return this.authService.register(registerDto, file);
   }
 

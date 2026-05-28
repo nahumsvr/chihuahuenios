@@ -7,26 +7,19 @@ export async function confirmarCompraAction(prevState: unknown, formData: FormDa
   try {
     const nombre = formData.get("nombre") as string;
     const token = formData.get("token") as string;
-    const identificacion = formData.get("identificacion") as File;
-
-    if (!nombre || !token || !identificacion) {
-      return { error: "Faltan datos requeridos (nombre, token o identificación)." };
-    }
-
-    if (identificacion.size > 5 * 1024 * 1024) {
-      return { error: "El archivo no debe exceder los 5MB." };
+    if (!nombre || !token) {
+      return { error: "Faltan datos requeridos (nombre o token)." };
     }
 
     const headers = await AuthHeaders();
 
-    // FormData ya contiene nombre, token e identificacion tal como lo envió el cliente.
-    // Fetch nativo se encargará de establecer el Content-Type correcto (multipart/form-data con boundary).
     const response = await fetch(`${API_URL}/api/boletos/confirmar`, {
       method: "POST",
       headers: {
         ...headers,
+        "Content-Type": "application/json",
       },
-      body: formData,
+      body: JSON.stringify({ nombre, token }),
     });
 
     const data = await response.json().catch(() => null);

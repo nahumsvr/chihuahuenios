@@ -93,11 +93,10 @@ export class BoletosService {
 
   /**
    * Confirmar la compra de un boleto:
-   * valida el token de reserva, sube la identificación a MinIO, y actualiza el estado.
+   * valida el token de reserva y actualiza el estado.
    */
   async confirmar(
     confirmarDto: ConfirmarBoletoDto,
-    file: Express.Multer.File,
     usuarioId: string,
   ) {
     // 1. Buscar boleto por reserva_token
@@ -119,16 +118,10 @@ export class BoletosService {
       );
     }
 
-    // 3. Subir archivo a MinIO
-    const identificacionUrl = await this.storageService.upload(
-      file,
-      'identificaciones',
-    );
-
-    // 4. Generar código único del boleto
+    // 3. Generar código único del boleto
     const codigoBoleto = uuidv4();
 
-    // 5. Transacción: actualizar boleto + usuario
+    // 4. Transacción: actualizar boleto
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -140,11 +133,6 @@ export class BoletosService {
       boleto.codigo_boleto = codigoBoleto;
       boleto.usuario_id = usuarioId;
       await queryRunner.manager.save(boleto);
-
-      // Actualizar usuario: guardar URL de identificación
-      await queryRunner.manager.update(User, usuarioId, {
-        identificacion_url: identificacionUrl,
-      });
 
       await queryRunner.commitTransaction();
 
