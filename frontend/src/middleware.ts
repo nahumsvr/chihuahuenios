@@ -29,6 +29,8 @@ export function middleware(request: NextRequest) {
   const isProtectedRoute = pathname.startsWith("/viajes");
   const isAdminRoute = pathname.startsWith("/admin");
   const isMisComprasRoute = pathname.startsWith("/mis-compras");
+  const isCheckoutRoute = pathname.startsWith("/checkout");
+  const isPublicUserRoute = pathname.startsWith("/rutas");
 
   // Decodificar rol del token si existe
   let rol: string | null = null;
@@ -43,8 +45,20 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(destination, request.url));
   }
 
-  // Rutas de usuario: requieren token
-  if (isProtectedRoute && !token) {
+  // Si es un administrador, no debe poder acceder a las rutas de cliente (comprar boletos, buscar, etc)
+  if (rol === "admin") {
+    if (
+      isProtectedRoute ||
+      isMisComprasRoute ||
+      isPublicUserRoute ||
+      isCheckoutRoute
+    ) {
+      return NextResponse.redirect(new URL("/admin/viajes", request.url));
+    }
+  }
+
+  // Rutas de usuario (viajes, checkout): requieren token para usuarios normales
+  if ((isProtectedRoute || isCheckoutRoute) && !token) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
@@ -56,9 +70,6 @@ export function middleware(request: NextRequest) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(loginUrl);
-    }
-    if (rol === "admin") {
-      return NextResponse.redirect(new URL("/admin/viajes", request.url));
     }
   }
 
@@ -79,10 +90,13 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/",
+    "/rutas/:path*",
     "/viajes/:path*",
     "/login",
     "/register",
     "/admin/:path*",
     "/mis-compras/:path*",
+    "/checkout/:path*",
   ],
 };

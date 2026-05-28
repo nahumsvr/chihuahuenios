@@ -1,13 +1,50 @@
-import { API_URL } from "@/constants";
+import { API_URL, TOKEN_NAME } from "@/constants";
 import { RutaResumen, ViajeConDisponibilidad } from "@/entities";
 import SearchForm from "@/app/_components/SearchForm";
 import ViajeCard from "@/app/_components/ViajeCard";
+import { cookies } from "next/headers";
+import { ShieldCheck } from "lucide-react";
+
+function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(atob(base64));
+  } catch {
+    return null;
+  }
+}
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const token = (await cookies()).get(TOKEN_NAME)?.value;
+  let rol = null;
+  if (token) {
+    rol = decodeJwtPayload(token)?.rol as string | null;
+  }
+
+  // Vista para el Administrador
+  if (rol === "admin") {
+    return (
+      <main className="min-h-screen bg-[#07070a] py-20 px-4 flex items-center justify-center font-[family-name:var(--font-geist-sans)]">
+        <div className="fixed top-0 left-1/2 -translate-x-1/2 h-[300px] w-[600px] rounded-full bg-warning/5 blur-[120px] pointer-events-none" />
+        <div className="bg-black/40 backdrop-blur-xl border border-white/5 rounded-2xl p-10 shadow-2xl max-w-lg w-full text-center space-y-6">
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-warning/10 mx-auto">
+            <ShieldCheck className="h-10 w-10 text-warning" />
+          </div>
+          <h1 className="text-3xl font-black text-white">Modo Administrador</h1>
+          <p className="text-gray-400">
+            Has iniciado sesión como administrador. Selecciona una opción del menú de navegación en la parte superior para comenzar a gestionar rutas y viajes.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   const origen = searchParams.origen as string | undefined;
   const destino = searchParams.destino as string | undefined;
   const fecha = searchParams.fecha as string | undefined;

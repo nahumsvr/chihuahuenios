@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export async function loginAction(prevState: unknown, formData: FormData) {
   const email = formData.get("email");
   const password = formData.get("password");
-  const redirectPath = (formData.get("redirectPath") as string) || "/";
+  let redirectPath = (formData.get("redirectPath") as string) || "/";
 
   if (!email || !password) {
     return { errorMsg: "El correo y la contraseña son obligatorios" };
@@ -37,6 +37,12 @@ export async function loginAction(prevState: unknown, formData: FormData) {
       sameSite: "lax",
       path: "/",
     });
+    
+    // Si es administrador y no hay una redirección específica, llevarlo a su panel
+    if (data.user?.rol === "admin" && redirectPath === "/") {
+      redirectPath = "/admin/viajes";
+    }
+
   } catch (err: unknown) {
     return {
       errorMsg: err instanceof Error ? err.message : "Error al iniciar sesión",
