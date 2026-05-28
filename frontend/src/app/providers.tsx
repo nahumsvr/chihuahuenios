@@ -8,7 +8,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       attribute="data-theme" 
       defaultTheme="system"
       enableSystem 
-      themes={["chihuaLight", "chihuaDark"]}
       value={{
         light: "chihuaLight",
         dark: "chihuaDark",
