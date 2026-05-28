@@ -68,6 +68,9 @@ export default function Navbar({
                 <li>
                   <Link href="/admin/viajes">Crear Viaje</Link>
                 </li>
+                <li>
+                  <Link href="/admin/viajes/lista">Lista de Viajes</Link>
+                </li>
               </>
             ) : (
               <>
@@ -121,6 +124,14 @@ export default function Navbar({
                   className={`btn btn-sm ${isActive("/admin/viajes")}`}
                 >
                   Crear Viaje
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/admin/viajes/lista"
+                  className={`btn btn-sm ${isActive("/admin/viajes/lista")}`}
+                >
+                  Ver Viajes
                 </Link>
               </li>
             </>

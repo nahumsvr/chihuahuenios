@@ -31,6 +31,7 @@ export interface ViajeConDisponibilidad {
   precio_boleto?: number;
   asientos_disponibles: number;
   total_asientos: number;
+  has_sold_boletos?: boolean;
 }
 
 export interface Boleto {

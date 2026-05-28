@@ -224,6 +224,57 @@ export class ViajesService {
   }
 
   /**
+   * Obtener todos los viajes (sin filtrar por fecha futura).
+   * Opcionalmente filtrado por ruta_id.
+   * Incluye un flag `has_sold_boletos` para determinar si se puede eliminar.
+   */
+  async findAll(ruta_id?: number) {
+    const queryBuilder = this.viajeRepository
+      .createQueryBuilder('viaje')
+      .innerJoinAndSelect('viaje.ruta', 'ruta')
+      .leftJoinAndSelect('viaje.boletos', 'boleto');
+
+    if (ruta_id) {
+      queryBuilder.where('viaje.ruta_id = :ruta_id', { ruta_id });
+    }
+
+    const viajes = await queryBuilder
+      .orderBy('viaje.fecha_hora_salida', 'DESC')
+      .getMany();
+
+    const now = new Date();
+
+    return viajes.map((viaje) => {
+      const ocupados = viaje.boletos.filter(
+        (b) =>
+          b.estado === 'pagado' ||
+          (b.estado === 'reservado' &&
+            b.bloqueado_hasta &&
+            new Date(b.bloqueado_hasta) > now),
+      ).length;
+
+      const totalBoletos = viaje.boletos.length;
+      const has_sold_boletos = viaje.boletos.some((b) => b.estado === 'pagado');
+
+      return {
+        id: viaje.id,
+        ruta: {
+          id: viaje.ruta.id,
+          origen: viaje.ruta.origen,
+          destino: viaje.ruta.destino,
+        },
+        fecha_hora_salida: viaje.fecha_hora_salida,
+        fecha_hora_llegada: viaje.fecha_hora_llegada,
+        duracion: viaje.duracion,
+        precio_boleto: viaje.precio_boleto,
+        asientos_disponibles: totalBoletos - ocupados,
+        total_asientos: totalBoletos,
+        has_sold_boletos,
+      };
+    });
+  }
+
+  /**
    * Eliminar un viaje y sus boletos, pero solo si ningún boleto ha sido vendido (estado = 'pagado')
    */
   async delete(id: number): Promise<void> {

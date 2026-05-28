@@ -55,6 +55,20 @@ export class ViajesController {
     return this.viajesService.obtenerDisponibles(query);
   }
 
+  @Get('all')
+  @Auth('admin')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Obtener todos los viajes (solo admin)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de todos los viajes. Si se provee ruta_id, filtra por ruta.',
+  })
+  findAll(@Query('ruta_id') ruta_id?: string) {
+    return this.viajesService.findAll(ruta_id ? Number(ruta_id) : undefined);
+  }
+
   @Get(':id/boletos')
   @ApiOperation({
     summary: 'Obtener boletos de un viaje (con Lazy Expiration)',
