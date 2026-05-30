@@ -54,3 +54,11 @@ backend/node_modules/
 backend/dist/
 backend/coverage/
 backend/*.tsbuildinfo
+
+# -------------------------------------------------------------------------
+# Documentación para IA
+# -------------------------------------------------------------------------
+.claudemd
+api-docs.md
+rules.md
+MVP.md
