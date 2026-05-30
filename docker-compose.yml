@@ -59,6 +59,8 @@ services:
     depends_on:
       - postgres
       - minio
+    command: >
+      sh -c "node dist/seed-admin.js && node dist/seed-rutas.js && node dist/seed-viajes.js && node dist/main.js"
     networks:
       - chihuahuenos_network
 

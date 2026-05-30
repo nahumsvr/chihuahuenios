@@ -25,7 +25,7 @@ graph TD
     User([Usuario/Navegador]) -->|Puerto 8000| Frontend[Frontend: Next.js]
     User -->|Puerto 3000| Backend[Backend: NestJS / Swagger]
     User -->|Puerto 9001| MinIOConsole[MinIO Web Console]
-    
+
     subgraph Docker Network: chihuahuenos_network
         Frontend -->|API_INTERNAL_URL: http://backend:3000| Backend
         Backend -->|DATABASE_URL| Postgres[(PostgreSQL DB)]
@@ -38,6 +38,7 @@ graph TD
 ## 🚀 Cómo Iniciar el Proyecto
 
 ### Requisitos Previos
+
 - Docker instalado y ejecutándose en tu máquina.
 - Docker Compose v2.0+.
 
@@ -45,47 +46,56 @@ graph TD
 
 1. **Clonar e iniciar el entorno:**
    Desde la raíz del proyecto, ejecuta el siguiente comando para compilar las imágenes e iniciar los contenedores:
+
    ```bash
    docker compose up --build
    ```
 
 2. **Verificar el estado de los contenedores:**
    Una vez completada la construcción, asegúrate de que todos los servicios estén corriendo correctamente:
+
    ```bash
    docker compose ps
    ```
+
+3. **Población de Datos Iniciales (Seeds):**
+   Al levantar los servicios con Docker Compose, el backend ejecuta automáticamente scripts de "seeding" para inicializar la base de datos:
+   - **Administrador:** Se crea el primer usuario administrador con base en las variables del `.env` (`ADMIN_EMAIL`, `ADMIN_PASSWORD`). Valores por defecto: `admin@chihuahuenos.com` / `admin1234`.
+   - **Rutas Base:** Se crean automáticamente las siguientes rutas operativas:
+     - Oaxaca - Puebla
+     - Chihuahua - Nuevo León
+     - Baja California Norte - Baja California Sur
+     - Chihuahua - CDMX
+   - **Viajes Programados:** Se programan 2 viajes por cada ruta existente. Los horarios de salida se fijan para el día siguiente de manera automática (por ejemplo a las 08:00 hrs y a las 16:00 hrs), para que siempre haya viajes disponibles al levantar el proyecto.
 
 ---
 
 ## 🔌 Puertos y Puntos de Acceso
 
-| Servicio | URL Local | Descripción |
-| :--- | :--- | :--- |
-| **Frontend (Next.js)** | [http://localhost:8000](http://localhost:8000) | Interfaz de usuario para clientes (listado de viajes, selección de asientos y checkout). |
+| Servicio                 | URL Local                                      | Descripción                                                                                       |
+| :----------------------- | :--------------------------------------------- | :------------------------------------------------------------------------------------------------ |
+| **Frontend (Next.js)**   | [http://localhost:8000](http://localhost:8000) | Interfaz de usuario para clientes (listado de viajes, selección de asientos y checkout).          |
 | **Backend (NestJS API)** | [http://localhost:3000](http://localhost:3000) | API REST principal. La documentación interactiva está disponible en `/api` (si está configurada). |
-| **MinIO Consola Web** | [http://localhost:9001](http://localhost:9001) | Panel de administración web para gestionar buckets y archivos. |
-| **MinIO API S3** | [http://localhost:9000](http://localhost:9000) | Endpoint para la carga de archivos por parte del backend. |
-| **PostgreSQL** | `localhost:5432` | Conexión directa a la base de datos local. |
+| **MinIO Consola Web**    | [http://localhost:9001](http://localhost:9001) | Panel de administración web para gestionar buckets y archivos.                                    |
+| **MinIO API S3**         | [http://localhost:9000](http://localhost:9000) | Endpoint para la carga de archivos por parte del backend.                                         |
+| **PostgreSQL**           | `localhost:5432`                               | Conexión directa a la base de datos local.                                                        |
 
 ---
 
-## 🔒 Reglas del MVP e Implementación Técnica
+## 🔒 MVP e Implementación Técnica
 
 ### 1. Control de Concurrencia (Crítico)
+
 Para evitar que dos usuarios compren el mismo asiento simultáneamente:
+
 - Al seleccionar un asiento, el backend NestJS ejecutará una transacción SQL utilizando un bloqueo a nivel de fila mediante `SELECT ... FOR UPDATE` en PostgreSQL.
 - El asiento cambiará su estado a `reservado` con un tiempo de expiración: `bloqueado_hasta = NOW() + 10 minutos`.
 - Cualquier consulta de disponibilidad excluirá los asientos reservados que tengan un `bloqueado_hasta` mayor al tiempo actual.
 
 ### 2. Carga de Identificaciones (MinIO)
-- Durante el checkout, el usuario subirá un archivo de identificación (PDF, JPG, PNG; max 5MB).
-- El backend recibe el buffer (a través de un `FileInterceptor`) y lo sube directamente al bucket `identificaciones` en MinIO.
-- Está prohibido guardar archivos en el sistema local del contenedor de NestJS; solo se almacena la URL pública resultante en la base de datos.
 
-### 3. Administración y API Keys
-- El frontend **no** cuenta con vistas administrativas de creación de rutas o viajes.
-- Toda la administración de rutas y corridas se realiza exclusivamente mediante peticiones HTTP `POST /api/rutas` y `POST /api/viajes` al Backend NestJS.
-- Estas peticiones deben incluir la cabecera `x-api-key` con el valor configurado en el entorno (`secreto-admin-key-2026`).
+- Durante el registro del usuario, el usuario subirá un archivo de identificación (PDF, JPG, PNG; max 5MB).
+- El backend recibe el buffer (a través de un `FileInterceptor`) y lo sube directamente al bucket `identificaciones` en MinIO.
 
 ---
 
@@ -100,6 +110,5 @@ chihuahuenios/
 │   ├── src/            # Código fuente del frontend (App Router)
 │   └── package.json
 ├── docker-compose.yml  # Configuración de Orquestación Docker
-├── MVP.md              # Definición de requerimientos del MVP
 └── README.md           # Este archivo de documentación
 ```
