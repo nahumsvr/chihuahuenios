@@ -9,6 +9,7 @@ Este repositorio contiene la plataforma web de venta de boletos de autobús inte
 El proyecto está estructurado como un monorrepo simple y utiliza las siguientes tecnologías:
 
 - **Frontend:** [Next.js 14](https://nextjs.org/) (App Router) en el puerto `8000`.
+  > **Nota sobre UI:** Se utilizó **DaisyUI** en lugar de NextUI, ya que NextUI cambió de nombre a **HeroUI** y requiere Next.js 15, mientras que este proyecto se mantiene en Next.js 14.
 - **Backend:** [NestJS](https://nestjs.com/) (con OpenAPI/Swagger) en el puerto `3000`.
 - **Base de Datos:** [PostgreSQL 15](https://www.postgresql.org/) en el puerto `5432`.
 - **Almacenamiento de Archivos:** [MinIO](https://min.io/) (Emulador local de AWS S3) en el puerto `9000` (API) y `9001` (Consola).
